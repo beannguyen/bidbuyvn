@@ -1,0 +1,234 @@
+/*--------------------------------------header------------------------------------*/
+body {
+  color: #6d6d6d;
+  font-family: 'Muli', sans-serif;
+  font-size: 13px;
+  line-height: 20px;
+  margin: 0px auto;
+}
+.clear
+{
+	clear:both;
+}
+.header
+{
+	width:auto;
+	height:142px;
+	margin:0px;
+	background:repeat #ececec;
+}
+.header_container
+{
+	width:1000px;
+	margin:auto;
+	background:repeat #ececec;
+	height:142px;
+}
+.left_header
+{
+	float:left;
+	width:350px;
+	height:120px;
+	margin:10px;
+	background-image:url(../images/logo.png);
+}
+.right_header
+{
+	float:right;
+	width:610px;
+	height:120px;
+	margin:10px;
+	background-image:url(../images/flash.png);
+}
+/*--------------------------------------menu------------------------------------*/
+.menu
+{
+	width:100%;
+	margin:auto;
+	height: 50px;
+	border-top: 1px solid #d8d8d8;
+	background-image: linear-gradient(to bottom, #FFF 0%, #ECECEC 100%);
+}
+.menu_container
+{
+	width:1000px;
+	margin:auto;
+	height:50px;
+	background-image: linear-gradient(to bottom, #FFF 0%, #ECECEC 100%);
+}
+
+.flexnav {
+	padding-left:11px;
+	height:50px;
+	width:100%;
+}
+.flexnav li {
+  position: relative;
+  overflow: hidden;
+}
+.flexnav li a {
+  position: relative;
+  display: block;
+  z-index: 2;
+  overflow: hidden;
+  font-size: 1em;
+  color: #fff;
+  text-decoration: none;
+  padding: 12px 8px;
+}
+.flexnav li + li {
+  border-top: 1px solid #3f3f3f;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.flexnav li ul {
+  width: 100%;
+  padding-left: 0;
+  list-style: none;
+  margin: 0;
+}
+.flexnav li ul li {
+  position: relative;
+  overflow: hidden;
+}
+.flexnav li ul li a {
+  display: block;
+  color: #fff;
+}
+.flexnav li ul.flexnav-show li {
+  overflow: visible;
+}
+
+  .flexnav {
+    margin: 0;
+  }
+}
+  .flexnav {
+    overflow: visible;
+    text-align: right;
+    position: relative;
+    z-index: 3;
+    margin: 0;
+    padding: 0;
+    padding-left: 0;
+    list-style: none;
+  }
+  .flexnav > li {
+    text-align: left;
+    list-style: none;
+    display: inline-block;
+    overflow: visible;
+    position: relative;
+    border: none !important;
+    -webkit-transition: background 0.2s ease-in-out;
+    transition: background 0.2s ease-in-out;
+    /* Submenu */float:left;
+  }
+ 
+  .flexnav > li > a {
+    font-size: 14px;
+	float:left;
+    color: #111;
+    text-decoration: none;
+    padding: 0 15px;
+    text-transform: uppercase;
+    font-family: 'Oswald', sans-serif;
+    line-height: 49px;
+    font-weight: 400;
+    position: relative;
+    z-index: 3;
+    -webkit-transition: 0.2s;
+    transition: 0.2s;
+  }
+  .flexnav > li > a:before {
+    content: "";
+    display: block;
+    position: absolute;
+    height: 4px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    -webkit-transition: 0.2s;
+    transition: 0.2s;
+  }
+  .flexnav > li:hover,
+  .flexnav > li.active {
+    background: #fff;
+  }
+  .flexnav > li:hover > a,
+  .flexnav > li.active > a {
+    color: #2f2f2f;
+  }
+  .flexnav > li:hover > a:before,
+  .flexnav > li.active > a:before {
+    background: green;
+  }
+  .flexnav > li > a:after {
+    display: inline-block;
+    content: "\f0d7";
+    font-family: 'FontAwesome';
+    font-size: 14px;
+    color: #c1c1c1;
+	right:-2px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    position: relative;
+    top: 0px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  .flexnav > li ul {
+    padding-left: 0;
+    list-style: none;
+    display: none;
+    position: absolute;
+    top: 49px;
+    left: 0;
+    min-width: 180px;
+    background: #fff;
+    -webkit-box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  }
+  .flexnav > li ul li {
+    width: 100%;
+    border: none !important;
+  }
+  
+  .flexnav > li ul li a {
+    color: #2f2f2f;
+    padding: 10px 20px;
+    -webkit-transition: 0.2s;
+    transition: 0.2s;
+  }
+   
+  .flexnav > li ul li a:hover {
+    background: #f2f2f2;
+    -webkit-transition: none;
+    transition: none;
+  }
+   .flexnav >li > ul
+   {
+		display:none;
+   }
+   .flexnav >li:hover > ul
+   {
+	display:block;
+  }
+  .flexnav > li ul li.active > a {
+    background: #f2f2f2;
+  }
+  .flexnav > li ul li + li a {
+    border-top: 1px solid #f2f2f2;
+  }
+  .flexnav > li > a {
+	
+    border-right: 1px solid #d8d8d8;
+    line-height: 49px;
+	padding:0px 23.3px;
+  }
+.flexnav > li.head > a
+{
+	border-left:1px solid #d8d8d8;
+}
+
+

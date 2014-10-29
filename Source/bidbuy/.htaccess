@@ -1,0 +1,17 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-l
+
+    # Rewrite post entry
+    RewriteRule ^p/(.+)/(.+).html$ post.php?category=$1&link=$2 [L]
+
+    # Rewrite category url
+    RewriteRule ^category/(.+).html$ archive.php?category=$1 [L]
+
+    # Rewrite backend
+    RewriteRule ^admin/(.*)$ dashboard.php?url=$1 [L]
+    RewriteRule ^admin$ dashboard.php?url=$1 [L]
+</IfModule>

@@ -1,0 +1,12 @@
+<?php
+
+class frontendController extends Controller
+{
+    function __construct() {
+        parent::__construct();
+    }
+    function index()
+    {
+        $this->view->render('frontend/index');
+    }
+}

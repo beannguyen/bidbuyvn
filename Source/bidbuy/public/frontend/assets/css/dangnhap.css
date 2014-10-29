@@ -1,0 +1,90 @@
+.page_dangky
+{
+	width:1000px;
+	margin:auto;
+}
+.center_page_dangky
+{
+	min-height:286px;
+	width:556px;
+	margin:10px auto;
+	background-color:#e5e5e5;
+	border:1px solid #d8d8d8;
+	border-radius:10px;
+}
+.header_dk
+{
+	width:300px;
+	height:50px;
+	margin:10px auto;
+}
+.header_dk img
+{
+	float:left;
+	margin-right:5px;
+	margin-left:63px;
+	height:50px;
+}
+.header_dk p
+{
+	float:left;
+	line-height:50px;
+	font-size:24px;
+	color:green;
+	font-weight:bold;
+}
+.nd_dk
+{
+	float:left;
+	width:478px;
+	margin:10px 39px;
+}
+.nd_dk li
+{
+	float:left;
+	width:100%;
+	margin-bottom:10px;
+}
+.nd_dk li p
+{
+	float:left;
+	width:150px;
+}
+.nd_dk li input
+{
+	width:328px;
+	float:left;
+	height:27px;
+	padding-left:5px;
+	border:1px solid #999;
+	border-radius:5px;
+}
+.nd_dk li select
+{
+	float:left;
+	width:104px;
+	margin-right:5px;
+	height:27px;
+	padding-left:5px;
+	border:1px solid #999;
+	border-radius:5px;
+}
+.nd_dk li input.in_mxt
+{
+	width:120px;
+}
+.nd_dk li textarea
+{
+	float:left;
+	width:327px;
+	min-height:90px;
+	border:1px solid #999;
+	border-radius:5px;
+}
+.nd_dk li input.ck_box
+{
+	width:auto;
+	float:none;
+	height:auto;
+	margin-right:5px;
+}
