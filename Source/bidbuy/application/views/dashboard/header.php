@@ -47,6 +47,7 @@
         }
     }
     ?>
+    <script src="<?php echo URL::get_site_url() ?>/public/dashboard/assets/plugins/jquery-1.10.2.min.js" type="text/javascript"></script>
     <!-- END   THEME STYLES -->
     <link rel="shortcut icon" href="favicon.ico"/>
 </head>

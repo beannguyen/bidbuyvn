@@ -242,6 +242,60 @@ var FormDropzone = function () {
             $('#set-feature-image-btn').show();
         });
 
+        jQuery('#product_price').focusout(function() {
+
+            // get product price
+            var price = $('#product_price').val();
+            if ( price !== '' ) {
+
+                // get pricing step and insert into textbox
+                var datastring = 'price=' + price;
+                $.ajax({
+                    type: "POST",
+                    url: getRootWebSitePath() + "/admin/product/suggestPricingStep",
+                    data: datastring,
+                    async: false,
+                    success: function (responseText) {
+
+                        //console.log(responseText);
+                        if (responseText != '') {
+
+                            var pricingStep = JSON.parse( responseText );
+                            // set value
+                            $('#product_price_step').val( pricingStep.step );
+                        }
+                    }
+                });
+            }
+        });
+
+        jQuery('#active-pending-product').click(function () {
+
+            var res = confirm('Bạn có chắc muốn kích hoạt sản phẩm này?');
+            if ( res ) {
+
+                // get product price
+                var productId = $('#active-pending-product').attr('data-action');
+                var datastring = "product_id=" + productId;
+                $.ajax({
+                    type: "POST",
+                    url: getRootWebSitePath() + "/admin/product/activePendingProduct",
+                    data: datastring,
+                    async: false,
+                    success: function (responseText) {
+
+                        //console.log(responseText);
+                        if (responseText == 'changed') {
+
+                            alert('Đã kích hoạt thành công');
+                            window.location = $(location).attr('href');
+                        } else
+                            alert('Đã xảy ra lỗi, vui lòng thử lại');
+                    }
+                });
+            }
+        })
+
         jQuery('#Publish').click(function () {
 
             // form validation

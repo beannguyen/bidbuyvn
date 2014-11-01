@@ -173,4 +173,16 @@ class productFunction
             echo '</tr>';
         }
     }
+
+    function loadListSeller()
+    {
+        $lid = 2;
+        $params = array('user_level' => "%:".$lid.";%");
+        $sql = "SELECT user_id, username FROM " . DB_PRE . "login_users WHERE user_level LIKE '" . $params['user_level'] . "'";
+        $query = $this->db->query( $sql );
+        while ( $row = $this->db->fetch( $query ) ) {
+
+            echo '<option value="'. $row['user_id'] .'">'. $row['username'] .'</option>';
+        }
+    }
 }

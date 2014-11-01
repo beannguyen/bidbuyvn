@@ -86,6 +86,11 @@ class productController extends Controller
                 'post_id' => $productId,
                 'meta_key' => 'product_timeout',
                 'meta_value' => $_POST['input-product-timeout']
+            ),
+            4 => array(
+                'post_id' => $productId,
+                'meta_key' => 'product_top_bid',
+                'meta_value' => 0
             )
         );
         foreach ($detail as $k => $v) {
@@ -224,7 +229,7 @@ class productController extends Controller
 
         if(isset($_POST['product_id']))
         {
-            if($this->model->delete($_POST['product_id']))
+            if( $this->model->delete( $_POST['product_id'] ) )
             {
                 echo 1;
             } else
@@ -234,6 +239,29 @@ class productController extends Controller
         } else
         {
             echo 0;
+        }
+    }
+
+    function activePendingProduct()
+    {
+        $productId = parent::secure( $_POST['product_id'] );
+        $res = $this->model->changeProductStatus( $productId, 'on-process' );
+        // if product status change success
+        if ( $res ) {
+
+            if ($this->model->createEndDate( $productId ) ) {
+
+                echo 'changed';
+                return true;
+            } else {
+
+                echo 'can_not_create_end_date';
+                return false;
+            }
+        } else {
+
+            echo 'not-changed';
+            return false;
         }
     }
 
@@ -264,6 +292,20 @@ class productController extends Controller
         $this->model->suggestSmallNumber();
     }
 
+    /**
+     * suggest pricing step
+     */
+    function suggestPricingStep()
+    {
+        $price = parent::secure( $_POST['price'] );
+        $pricingStep = $this->model->suggestPricingStep( $price );
+
+        echo $pricingStep;
+    }
+
+    /**
+     * check for lasted pricing step is already existed
+     */
     function findLastedPricingStep()
     {
         $res = $this->model->findLastedPricingStep();

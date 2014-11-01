@@ -11,18 +11,7 @@
             <small>Trang cá nhân</small>
         </h3>
         <ul class="page-breadcrumb breadcrumb">
-            <li class="btn-group">
-                <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
-                        data-delay="1000" data-close-others="true">
-                    <span>Actions</span> <i class="icon-angle-down"></i>
-                </button>
-                <ul class="dropdown-menu pull-right" role="menu">
-                    <li><a href="./user_group">Quản lý nhóm</a></li>
-                    <li><a href="./user_profile">Trang cá nhân</a></li>
-                    <li class="divider"></li>
-                    <li><a href="./all_users">Tất cả người dùng</a></li>
-                </ul>
-            </li>
+
             <li>
                 <i class="icon-home"></i>
                 <a href="index.html">Dashboard</a>

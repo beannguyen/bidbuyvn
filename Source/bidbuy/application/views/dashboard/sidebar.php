@@ -89,7 +89,7 @@
         </li>
         <?php endif; ?>
         <?php if( $generic->getPermission( UserInfo::getUserId(), 'can_active_seller_account' ) ): ?>
-            <li class="<?=(isset($this->active_userprofile)) ? $this->active_userprofile : ''; ?>">
+            <li class="<?=(isset($this->active_seller)) ? $this->active_seller : ''; ?>">
                 <a href="<?php echo URL::get_site_url(); ?>/admin/activeSeller">
                     Kích hoạt seller</a>
             </li>

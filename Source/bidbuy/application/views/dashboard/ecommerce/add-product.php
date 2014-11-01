@@ -5,7 +5,7 @@ function createSubmitTypeBtn ( $postStatus )
     $btn = array();
     switch ( $postStatus ) {
 
-        case 'publish' :
+        case 'on-process' :
             $btn['id'] = 'Update';
             $btn['name'] = 'Cập nhật';
             break;
@@ -14,10 +14,14 @@ function createSubmitTypeBtn ( $postStatus )
             $btn['name'] = 'Cập nhật';
             break;
         case 'draft' :
-            $btn['id'] = 'Update';
+            $btn['id'] = 'Publish';
             $btn['name'] = 'Đăng bài';
             break;
         case 'trash' :
+            $btn['id'] = 'Update';
+            $btn['name'] = 'Đăng lại bài';
+            break;
+        case 'timeout' :
             $btn['id'] = 'Update';
             $btn['name'] = 'Đăng lại bài';
             break;
@@ -89,8 +93,6 @@ $generic = new Generic();
                                                                                                             data-type="text"
                                                                                                             data-pk="1"
                                                                                                             data-original-title="Permalink"><?php echo $this->info['product_name']; ?></a>.html</span>
-                        <span id="change-permalinks"><a href="#" class="btn green" target="_blank">Change
-                                Permalinks</a></span>
                         <span id="view-post-btn"><a href="<?php echo URL::get_site_url(); ?>/p/<?php echo $this->info['category'][0]['slug']; ?>/<?php echo $this->info['product_name']; ?>.html"
                                                     class="btn green" target="_blank">View Post</a></span>
                 </div>
@@ -233,14 +235,14 @@ $generic = new Generic();
                                     <div class="form-group">
                                         <label  class="col-md-3 control-label">SKU</label>
                                         <div class="col-md-9">
-                                            <input type="text" id="product_sku" class="form-control" value="<?=(isset($this->info['product_sku'])) ? $this->info['product_sku'] : ''; ?>">
+                                            <input type="text" id="product_sku" class="form-control" value="<?=(isset($this->info['product_sku'])) ? $this->info['product_sku'] : ''; ?>" <?php if ( isset( $this->info ) && ( $this->info['product_status'] === 'on-process' || $this->info['product_status'] === 'timeout' ) ) echo 'disabled'; ?>>
                                         </div>
                                     </div>
                                     <div id="txt_price_wrap" class="form-group">
                                         <label  class="col-md-3 control-label">Giá khởi điểm <em>(nghìn đồng)</em></label>
                                         <div class="col-md-9">
                                             <!-- <input type="text" id="product_show_price" class="form-control"> -->
-                                            <input type="text" id="product_price" class="form-control" value="<?=(isset($this->info['product_price'])) ? $this->info['product_price'] : ''; ?>"/>
+                                            <input type="text" id="product_price" class="form-control" value="<?=(isset($this->info['product_price'])) ? $this->info['product_price'] : ''; ?>" <?php if ( isset( $this->info ) && ( $this->info['product_status'] === 'on-process' || $this->info['product_status'] === 'timeout' ) ) echo 'disabled'; ?>/>
                                             <span class="help-block"></span>
                                         </div>
                                     </div>
@@ -254,13 +256,13 @@ $generic = new Generic();
                                         <label  class="col-md-3 control-label">Thời gian đấu giá</label>
                                         <div class="col-md-9">
                                             <div class="col-md-3">
-                                                <input id="timeout-day" class="form-control input-small" placeholder=".input-xsmall" type="text" value="<?=(isset($this->info['product_timeout'])) ? $this->info['product_timeout'][0] : '0'; ?>"> ngày
+                                                <input id="timeout-day" class="form-control input-small" placeholder="" type="text" value="<?=(isset($this->info['product_timeout'])) ? $this->info['product_timeout'][0] : '0'; ?>" <?php if ( isset( $this->info ) && ( $this->info['product_status'] === 'on-process' || $this->info['product_status'] === 'timeout' ) ) echo 'disabled'; ?>> ngày
                                             </div>
                                             <div class="col-md-3">
-                                                <input id="timeout-hour" class="form-control input-small" placeholder=".input-xsmall" type="text" value="<?=(isset($this->info['product_timeout'])) ? $this->info['product_timeout'][1] : '0'; ?>"> giờ
+                                                <input id="timeout-hour" class="form-control input-small" placeholder="" type="text" value="<?=(isset($this->info['product_timeout'])) ? $this->info['product_timeout'][1] : '0'; ?>" <?php if ( isset( $this->info ) && ( $this->info['product_status'] === 'on-process' || $this->info['product_status'] === 'timeout' ) ) echo 'disabled'; ?>> giờ
                                             </div>
                                             <div class="col-md-3">
-                                                <input id="timeout-minute" class="form-control input-small" placeholder=".input-xsmall" type="text" value="<?=(isset($this->info['product_timeout'])) ? $this->info['product_timeout'][2] : '0'; ?>"> phút
+                                                <input id="timeout-minute" class="form-control input-small" placeholder="" type="text" value="<?=(isset($this->info['product_timeout'])) ? $this->info['product_timeout'][2] : '0'; ?>" <?php if ( isset( $this->info ) && ( $this->info['product_status'] === 'on-process' || $this->info['product_status'] === 'timeout' ) ) echo 'disabled'; ?>> phút
                                             </div>
                                             <div class="col-md-9">
                                                 <span class="help-block"></span>
@@ -339,19 +341,65 @@ $generic = new Generic();
             </div>
         </div>
         <div class="portlet-body form">
+            <script src='<?php echo URL::get_site_url(); ?>/public/dashboard/assets/plugins/countdown.js' type='text/javascript'></script>
             <div id="post-status">
                 <div id="misc-publishing-actions">
 
                     <div class="misc-pub-section misc-pub-post-status"><label class="icon-bell">Status:</label>
-                        <strong id="post-status-display"><?php if(isset($this->info)) { if( $this->info['product_status'] == 'publish' ) echo 'Đã đăng'; else if( $this->info['product_status'] == 'pending' ) echo 'Đợi duyệt'; else if($this->info['product_status'] == 'draft') echo 'Bản nháp'; else echo 'Đã bị xóa'; } ?></strong>
+                        <strong id="post-status-display">
+                            <?php
+                            if( isset( $this->info ) ) {
+                                if( $this->info['product_status'] == 'on-process' ) {
+
+                                    echo '<span id="status-text">Đang đấu giá</span>';
+                                    echo '<br />';
+                                    echo '<span id="time_count_down_'. $this->productId .'" style="color: blue;"></span>';
+                                    ?>
+                                    <script type="text/javascript">
+                                        var countdown = new Countdown({
+                                            selector: '#time_count_down_<?php echo $this->productId; ?>',
+                                            msgAfter: "Đã hết hạn",
+                                            msgPattern: "{days} ngày, {hours} giờ {minutes} phút {seconds}",
+                                            dateStart: new Date(),
+                                            dateEnd: new Date('<?php echo $this->info['product_end_date']; ?>'),
+                                            onEnd: function() {
+                                                $('#status-text').text('Đã hết hạn');
+                                                $('#product_sku').prop('disabled', true);
+                                                $('#product_price').prop('disabled', true);
+                                                $('#timeout-day').prop('disabled', true);
+                                                $('#timeout-hour').prop('disabled', true);
+                                                $('#timeout-minute').prop('disabled', true);
+                                                $('#Update').addClass('disabled');
+                                            }
+                                        });
+                                    </script>
+                                    <?php
+                                } else if( $this->info['product_status'] == 'pending' ) {
+
+                                    echo 'Đợi duyệt ';
+                                    if ( $generic->getPermission( UserInfo::getUserId(), 'can_manager_all_products' ) ) {
+
+                                        echo '<a href="javascript:;" id="active-pending-product" data-action="'. $this->productId.'" style="color:red;">Kích hoạt</a>';
+                                    }
+                                } else if($this->info['product_status'] == 'draft') {
+
+                                    echo 'Bản nháp';
+                                } else if ($this->info['product_status'] == 'timeout') {
+
+                                    echo 'Đã hết hạn';
+                                } else
+                                    echo 'Đã bị xóa';
+                            }
+                            ?>
+                        </strong>
                     </div>
                     <!-- .misc-pub-section -->
 
                     <div class="misc-pub-section curtime misc-pub-curtime">
                         <span id="timestamp">
-                        Published on: <b><?php if(isset($this->info)) { echo date_format(date_create($this->info['product_modified']), 'd M Y H:i'); } ?></b></span>
+                        Cập nhật: <b><?php if(isset($this->info)) { echo date_format(date_create($this->info['product_modified']), 'd M Y H:i'); } ?></b></span>
                         <br/>
-                        <?php if(isset($this->info) && $this->info['product_status'] != 'trash'): ?>
+                        <?php if ( isset( $this->info ) && $this->info['product_status'] !== 'trash' && $this->info['product_status'] !== 'on-process' ): ?>
                         <a href="javascript:;" class="delete-post-btn" style="color: red">
                             Xóa bài viết
                         </a>
@@ -366,9 +414,15 @@ $generic = new Generic();
         </div>
         <div class="row">
             <div class="col-md-3">
+                <?php if ( isset( $this->info ) && $this->info['product_status'] !== 'on-process' && $this->info['product_status'] !== 'timeout' && $this->info['product_status'] !== 'trash' ) : ?>
                 <a href="javascript:;" id="<?php if ( isset( $this->info['product_status'] ) ): echo createSubmitTypeBtn( $this->info['product_status'] )['id']; else: echo 'Publish'; endif; ?>" class="btn green">
                     <?php if ( isset( $this->info['product_status'] ) ): echo createSubmitTypeBtn( $this->info['product_status'])['name']; else: echo 'Đăng bài'; endif; ?>
                 </a>
+                <?php elseif ( !isset( $this->info ) ): ?>
+                <a href="javascript:;" id="Publish" class="btn green">
+                    Đăng bài
+                </a>
+                <?php endif; ?>
             </div>
         </div>
     </div>

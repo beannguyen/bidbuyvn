@@ -9,9 +9,8 @@ class Controller extends Generic
     }
 
     /**
-     *
-     * @param string $name Name of the model
-     * @param string $path Location of the models
+     * @param $name
+     * @param string $modelPath
      */
     public function loadModel($name, $modelPath = 'application/models/') {
 

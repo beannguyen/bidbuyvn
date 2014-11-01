@@ -20,6 +20,20 @@ class timer
 
         return $datetime->format('Y/m/d H:i:s');
     }
+
+    function add( $addString )
+    {
+        $tz_string = "Asia/Ho_Chi_Minh"; // Use one from list of TZ names http://php.net/manual/en/timezones.php
+        $tz_object = new DateTimeZone($tz_string);
+
+        $datetime = new DateTime();
+        $datetime->setTimezone($tz_object);
+
+        $interval = DateInterval::createfromdatestring( $addString ); // +1 day +2 hours +15 seconds
+        $datetime->add($interval);
+
+        return $datetime->format('Y/m/d H:i:s');
+    }
     function time_elapsed_A($secs){
         $bit = array(
             'y' => $secs / 31556926 % 12,
@@ -36,10 +50,10 @@ class timer
         //return join(' ', $ret);
         return $bit['w'];
     }
-    public static function gDate($option)
+
+    function timeFormat( $value, $format = 'd M Y H:i' )
     {
-        $today = getdate();
-        return $today['$today'];
+        return date_format( date_create( $value ), $format );
     }
 }
 

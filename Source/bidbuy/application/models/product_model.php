@@ -29,6 +29,12 @@ class Product_Model extends Model
         }
     }
 
+    /**
+     * update product info
+     * @param $productId
+     * @param $data
+     * @return bool
+     */
     function update( $productId, $data )
     {
         $table = DB_PRE . "posts";
@@ -120,6 +126,10 @@ class Product_Model extends Model
             2 => 'product_price_step',
             3 => 'product_timeout',
         );
+        // if product is on process, add product_end_date key
+        if ( $info['product_status'] == 'on-process' )
+            $key[] = 'product_end_date';
+        // get value for all key
         foreach ( $key as $k => $v ) {
 
             $sql = "SELECT meta_value FROM " . DB_PRE . "postmeta WHERE post_id = " . $productId . " AND meta_key = '". $v ."'";
@@ -178,6 +188,9 @@ class Product_Model extends Model
         return $result['meta_value'];
     }
 
+    /**
+     * return smallest step for pricing step config
+     */
     function suggestSmallNumber()
     {
         // get min smaller_number
@@ -190,6 +203,10 @@ class Product_Model extends Model
             echo $result['smaller_number'];
     }
 
+    /**
+     * get max stt in pricing step
+     * @return int
+     */
     function getMaxStt()
     {
         $sql = "SELECT max(stt) as max FROM ". DB_PRE ."product_step";
@@ -205,6 +222,10 @@ class Product_Model extends Model
         return $stt;
     }
 
+    /**
+     * find -8 number in pricing step
+     * @return bool
+     */
     function findLastedPricingStep()
     {
         $sql = "SELECT stt FROM ". DB_PRE ."product_step WHERE max = -8";
@@ -216,6 +237,37 @@ class Product_Model extends Model
         return false;
     }
 
+    /**
+     * return pricing step for add new product
+     * @param $price
+     * @return string
+     */
+    function suggestPricingStep( $price )
+    {
+        // get valid step for this price
+        $sql = "SELECT * FROM ". DB_PRE ."product_step WHERE min < ". $price ." AND ". $price ." <= max";
+        $query = $this->db->query( $sql );
+
+        if ( $this->db->numrows( $query ) > 0 ) {
+
+            $result = $this->db->fetch( $query );
+        } else {
+
+            $sql = "SELECT * FROM ". DB_PRE ."product_step WHERE stt = " . $this->getMaxStt();
+            $query = $this->db->query( $sql );
+
+            $result = $this->db->fetch( $query );
+        }
+
+        return json_encode( $result );
+    }
+
+    /**
+     * add new pricing step to database
+     * @param $stt
+     * @param $data
+     * @return bool|mysqli_result
+     */
     function newPricingStep( $stt, $data )
     {
         $sql = "INSERT INTO `". DB_PRE ."product_step`
@@ -233,6 +285,11 @@ class Product_Model extends Model
         return false;
     }
 
+    /**
+     * edit pricing step
+     * @param $data
+     * @return bool
+     */
     function updatePricingStep( $data )
     {
         // update max value for previous step
@@ -266,6 +323,11 @@ class Product_Model extends Model
         return false;
     }
 
+    /**
+     * delete pricing step in config
+     * @param $stepId
+     * @return bool
+     */
     function deletePricingStep( $stepId )
     {
         // get stt of step
@@ -309,6 +371,11 @@ class Product_Model extends Model
         return true;
     }
 
+    /**
+     * get details pricing step
+     * @param $stepId
+     * @return array|bool
+     */
     function getPricingStepDetail( $stepId )
     {
         $sql = "SELECT * FROM ". DB_PRE ."product_step WHERE ID = " . $stepId;
@@ -319,6 +386,239 @@ class Product_Model extends Model
             $details = $this->db->fetch( $query );
             return $details;
         }
+        return false;
+    }
+
+    /**
+     * get all month year from product archive (post_date)
+     * @return array
+     */
+    function getArchives()
+    {
+        $time = new timer();
+        $sql = "SELECT DISTINCT post_date FROM ". DB_PRE ."posts WHERE post_type = 'product';";
+        $query = $this->db->query( $sql );
+
+        $archives = array();
+        while ( $row = $this->db->fetch( $query ) ) {
+
+            $archives[] = $time->timeFormat( $row['post_date'], 'd M Y' );
+        }
+        $archives = array_unique( $archives );
+        return $archives;
+    }
+
+    /**
+     * return all list products and information after checking due time
+     * @param $filters
+     * @return array|bool
+     */
+    function getAllProducts( $filters )
+    {
+        // get all product ID
+        $sql = "select ID, post_author, post_title, post_status
+                from ". DB_PRE ."posts
+                where  ". DB_PRE ."posts.post_type = 'product'";
+        // add product status filter
+        if ( isset ( $filters['status'] ) ) {
+
+            $sql .= " and ". DB_PRE ."posts.post_status = '". $filters['status'] ."'";
+        }
+        // add date time filter
+        if ( isset ( $filters['archive'] ) ) {
+
+            $time = new timer();
+            $t = $time->timeFormat( $filters['archive'], 'Y-m-d' );
+            // add sql string
+            $sql .= " and post_date like '". $t ."%'";
+        }
+        // if you are a seller, list only your product
+        if ( UserInfo::getUserId() != 1 ) {
+
+            $sql .= " and post_author = '". UserInfo::getUserId() ."'";
+        }
+        // add author filter
+        if ( isset ( $filters['seller'] ) ) {
+
+            $sql .= " and ". DB_PRE ."posts.post_author = ". $filters['seller'] ."";
+        }
+        $sql .= " order by ". DB_PRE ."posts.post_date";
+
+        if ( isset ( $filters['cat'] ) ) {
+
+            $sql = "select ID, post_author, post_title, post_status
+                    from bbv_posts, bbv_term_relationships, bbv_term_taxonomy
+                    where bbv_term_taxonomy.term_taxonomy_id = bbv_term_relationships.term_taxonomy_id
+                    and bbv_term_relationships.object_id = bbv_posts.ID
+                    and bbv_term_taxonomy.term_id = " . $filters['cat'];
+        }
+        // if you are a seller, list only your product on this category
+        if ( UserInfo::getUserId() != 1 ) {
+
+            $sql .= " and post_author = '". UserInfo::getUserId() ."'";
+        }
+
+        // init page navigation
+        if ( isset( $filters['page'] ) ) {
+
+            $page = $filters['page'];
+        } else
+            $page = 1;
+        // set append
+        if ( isset ( $filters ) ) {
+
+            // set append
+            $append = '';
+            foreach ( $filters as $k => $v ) {
+
+                if ( $k !== 'page' ) {
+
+                    $append .= $k . '=' . $v . ';';
+                }
+            }
+            $append = rtrim( $append, ';' );
+        }
+        $pager = new PageNavigation( $sql, 10, 5, URL::get_site_url() . '/admin/dashboard/products', $page, $append );
+
+        // get sql added limit
+        $newSql = $pager->paginate();
+
+        if ( $newSql == false )
+            return false;
+
+        /** check for ended product */
+        $this->checkProductWhenDueDate();
+
+        $query = $this->db->query( $newSql );
+        // get all products information
+        $products = array();
+        while ( $row = $this->db->fetch( $query ) ) {
+
+            $products[$row['ID']]['product_title'] = $row['post_title'];
+            // get author information
+            $s = "select username
+                from ". DB_PRE ."login_users
+                where user_id = " . $row['post_author'];
+            $q = $this->db->query( $s );
+            $r = $this->db->fetch( $q );
+            $products[$row['ID']]['product_author'] = array(
+
+                'id' => $row['post_author'],
+                'name' => $r['username']
+            );
+            $products[$row['ID']]['product_status'] = $row['post_status'];
+            // get product category
+            $sql = "select ". DB_PRE ."terms.term_id, ". DB_PRE ."terms.name
+                    from ". DB_PRE ."terms, ". DB_PRE ."term_relationships, ". DB_PRE ."term_taxonomy
+                    where ". DB_PRE ."terms.term_id = ". DB_PRE ."term_taxonomy.term_id
+                        and ". DB_PRE ."term_taxonomy.term_taxonomy_id = ". DB_PRE ."term_relationships.term_taxonomy_id
+                        and ". DB_PRE ."term_relationships.object_id = " . $row['ID'];
+            $q = $this->db->query( $sql );
+            $res = $this->db->fetch( $q );
+            $products[$row['ID']]['product_category'] = array(
+
+                'id' => $res['term_id'],
+                'name' => $res['name']
+            );
+            // get meta value
+            $sql = "SELECT *
+                    FROM ". DB_PRE ."postmeta
+                    WHERE post_id = " . $row['ID'];
+            $q = $this->db->query( $sql );
+            while ( $r = $this->db->fetch( $q ) ) {
+
+                $products[$row['ID']][$r['meta_key']] = $r['meta_value'];
+            }
+        }
+
+        // render navigation
+        $products['navigation'] = $pager->renderFullNav( '<i class="icon-angle-left"></i>', '<i class="icon-angle-right"></i>' );
+        return $products;
+    }
+
+    /**
+     * check timeout for all product when page load
+     */
+    function checkProductWhenDueDate()
+    {
+        $time = new timer();
+        // query string to get all product
+        $sql = "SELECT post_id
+                FROM ". DB_PRE ."postmeta
+                WHERE meta_key = 'product_end_date'
+                AND meta_value <= '". $time->getDateTime() ."'";
+        $query = $this->db->query( $sql );
+        while ( $row = $this->db->fetch( $query ) ) {
+
+            $this->changeProductStatus( $row['post_id'], 'timeout' );
+        }
+    }
+
+    /**
+     * check product timeout
+     * @param $productId
+     */
+    function checkSingleProductTimeout( $productId )
+    {
+        $time = new timer();
+        $sql = "SELECT count(*) as num FROM ". DB_PRE ."posts WHERE post_status != 'timeout' AND ID = " . $productId;
+        $query = $this->db->query( $sql );
+        $count = $this->db->fetch( $query );
+        if ( $count['num'] > 0 ) {
+
+            // query string to check due date
+            $sql = "SELECT post_id
+                FROM ". DB_PRE ."postmeta
+                WHERE meta_key = 'product_end_date'
+                AND meta_value <= '". $time->getDateTime() ."'
+                AND post_id = " . $productId;
+            $q = $this->db->query( $sql );
+            while ( $row = $this->db->fetch( $q ) ) {
+
+                $this->changeProductStatus( $row['post_id'], 'timeout' );
+            }
+        }
+    }
+
+    /**
+     * change status to $status
+     * @param $productId
+     * @param $status
+     * @return bool
+     */
+    function changeProductStatus( $productId, $status )
+    {
+        $sql = "UPDATE ". DB_PRE ."posts SET post_status = '". $status ."' WHERE ID = " . $productId;
+        if ( $this->db->query( $sql ) )
+            return true;
+        else
+            return false;
+    }
+
+    /**
+     * create product_end_date meta when administrator active this product
+     * @param $productId
+     * @return bool
+     */
+    function createEndDate( $productId )
+    {
+        $time = new timer();
+        // get during time
+        $sql = "SELECT meta_value FROM ". DB_PRE ."postmeta WHERE meta_key = 'product_timeout' AND post_id = " . $productId;
+        $query = $this->db->query( $sql );
+        $result = $this->db->fetch( $query );
+        $timeout = unserialize( $result['meta_value'] );
+        $string = '+' . $timeout[0] . ' days +' . $timeout[1] . 'hours +' . $timeout[2] . 'minutes';
+        // set end date
+        $endDate = $time->add( $string );
+        // add meta
+        $meta = array (
+            'post_id' => $productId,
+            'meta_key' => 'product_end_date',
+            'meta_value' => $endDate
+        );
+        if ($this->addMeta( $meta ) )
+            return true;
         return false;
     }
 }

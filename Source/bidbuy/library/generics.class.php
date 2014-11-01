@@ -676,4 +676,26 @@ class Generic extends Connect
         }
         return $newURL;
     }
+
+    /**
+     * usage: send a string: cat=1&page=7, return $filters { 'cat' => 1, 'page' => 7 }
+     * @param $string
+     * @return array
+     */
+    function getFilters( $string )
+    {
+        // store all request filter
+        $filters = array();
+        $temp = explode( ';', $string );
+        foreach ( $temp as $k => $v ) {
+
+            if ( $v !== '' ) {
+
+                $temp1 = explode( '=', $v );
+                $filters[$temp1[0]] = $temp1[1];
+            }
+        }
+
+        return $filters;
+    }
 }

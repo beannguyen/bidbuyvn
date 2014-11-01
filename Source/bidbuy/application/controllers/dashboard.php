@@ -101,7 +101,7 @@ class dashboardController extends Controller
 
         $this->view->title = 'Kích hoạt tài khoản';
         $this->view->activeuser = 'active';
-        $this->view->active_alluser = 'active';
+        $this->view->active_seller = 'active';
 
         // load js
         $this->view->js[0] = 'scripts/active-seller.js';
@@ -444,8 +444,44 @@ class dashboardController extends Controller
         $this->view->render( 'dashboard/footer' );
     }
 
-    function products()
+    function products( $filterString = '' )
     {
+
+        // if user can not post new thread
+        if ( !$this->gen->getPermission( UserInfo::getUserId(), 'can_manager_own_products' ) ) {
+            URL::redirect_to( URL::get_site_url().'/admin/accessdeny' );
+            exit();
+        }
+        // get filter
+        if ( $filterString !== '' ) {
+
+            $filters = parent::getFilters( $filterString );
+        } else {
+
+            // set default settings
+            $filters['status'] = 'on-process';
+            $filters['page'] = 1;
+        }
+
+        // get list post
+        $this->loadModel( 'product' );
+        $products = $this->model->getAllProducts( $filters, $filterString );
+        $archives = $this->model->getArchives();
+        // render to view
+        if ( $products != false )
+            $this->view->productInfo = $products;
+        $this->view->filters = $filters;
+        $this->view->archives = $archives;
+        $this->view->generic = $this->gen;
+
+        // load css
+        $this->view->css[] = 'css/pages/coming-soon.css';
+        // load js
+        $this->view->js[] = 'plugins/moment.js';
+        $this->view->js[] = 'plugins/countdown.js';
+        $this->view->js[] = 'scripts/all-products.js';
+        $this->view->loadJS[] = 'Products';
+
         $this->view->title = "Quản lý hóa đơn";
         $this->view->products = "active";
         $this->view->active_post = "active";
@@ -508,8 +544,18 @@ class dashboardController extends Controller
         else
             $this->view->productId = $productId;
 
+        // check product timeout
+        $this->model->checkSingleProductTimeout( $productId );
+
         // get product information
         $this->view->info = $this->model->getProductInfo( $productId );
+
+        // if you are not product author or not administrator
+        if ( UserInfo::getUserId() != 1 && UserInfo::getUserId() != $this->view->info['product_author']['id'] ) {
+
+            URL::redirect_to( URL::get_site_url().'/admin/accessdeny' );
+            exit();
+        }
 
         $this->view->title = 'Chỉnh hàng hóa';
         $this->view->addproducts = 'active';

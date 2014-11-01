@@ -39,7 +39,7 @@ var ActivationSeller = function () {
             jQuery('#all_user_manager_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
             $("#all_user_manager_filter").css({ float: "right" });
 
-            handleSubmitForm();
+            //handleSubmitForm();
         }
     };
 }();
