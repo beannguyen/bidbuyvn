@@ -1,0 +1,11 @@
+.head-tab {
+  height: 40px;
+  line-height: 40px;
+}
+.head-tab ul {
+  padding: 0;
+  margin: 0;
+}
+.head-tab ul li {
+  float: left;
+}

@@ -88,6 +88,7 @@
                             </label>
                         </div>
                     </div>
+                    <!---
                     <div class="form-group">
                         <label  class="">Người dùng mới</label>
                         <div class="checkbox-list">
@@ -105,6 +106,7 @@
                             </label>
                         </div>
                     </div>
+                    --->
                     <div class="form-group">
                         <label class="control-label" for="inputSuccess">Hạn chế tên miền email</label>
                         <i class="icon-info-sign tooltips" data-original-title="Hạn chế những tên miền email" data-container="body"></i>

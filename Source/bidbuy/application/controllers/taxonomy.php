@@ -62,15 +62,49 @@ class taxonomyController extends Controller
         echo $this->model->getCategorySlug($term_id);
     }
 
-    function archive( $slug ) {
+    function archive( $category ) {
 
-        // get list post and information
-        //$postsInfo = $this->model->getListPostInCategory( $slug );
-        //$this->view->title = "Chuyên mục";
-        //$this->view->postInfo = $postsInfo;
+        // init variables
+        $notFound = false;
+        $title = '';
+        $productInfo = array();
+        // check for 404 error
+        if ( !$this->model->findTaxonomyById( $category['id'] ) ) {
 
-        //$this->view->render('frontend/header');
+            $notFound = true;
+            $title = 'Không tìm thấy chuyên mục';
+        } else {
+
+            $slug = $this->model->getCategorySlug( $category['id'] );
+            // check if slug on url is ok
+            if ( strpos( $category['query'], $slug ) !== FALSE ) {
+
+                // create filter list
+                if ( $category['query'] === $slug ) {
+
+                    $filters['page'] = 1;
+                } else {
+
+                    $filters['page'] = substr( $category['query'], - ( strlen( $category['query'] ) - strlen( $slug ) - 1 ) );
+                }
+
+                $productInfo = $this->model->getListProductInCategory( $category['id'], $filters );
+
+                $title = $this->model->getTaxonomy( $category['id'] )['name'];
+            } else {
+
+                $notFound = true;
+                $title = 'Không tìm thấy chuyên mục';
+            }
+        }
+
+        // render to view
+        $this->view->title = $title;
+        $this->view->notfound = $notFound;
+        $this->view->products = $productInfo;
+
+        $this->view->render('frontend/header');
         $this->view->render('frontend/archive');
-        //$this->view->render('frontend/footer');
+        $this->view->render('frontend/footer');
     }
 }

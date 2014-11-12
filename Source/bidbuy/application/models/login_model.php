@@ -139,7 +139,7 @@ class Login_Model extends Model
         session_regenerate_id();
 
         // Save if user is restricted
-        if ( !empty($this->result['restricted']) ) $_SESSION['jigowatt']['restricted'] = 1;
+        if ( !empty($this->result['restricted']) ) $_SESSION['ssbidbuy']['restricted'] = 1;
 
         // Is the admin forcing a password update if encryption is not the desired method?
         if (parent::getOption('pw-encrypt-force-enable')) :
@@ -147,27 +147,27 @@ class Login_Model extends Model
             $type = $this->getOption('pw-encryption');
 
             if (strlen($this->result['password']) == 32 && $type == 'SHA256')
-                $_SESSION['jigowatt']['forcePwUpdate'] = 1;
+                $_SESSION['ssbidbuy']['forcePwUpdate'] = 1;
 
             if (strlen($this->result['password']) != 32 && $type == 'MD5')
-                $_SESSION['jigowatt']['forcePwUpdate'] = 1;
+                $_SESSION['ssbidbuy']['forcePwUpdate'] = 1;
 
         endif;
 
         // Save user's current level
         $user_level = unserialize($this->result['user_level']);
-        $_SESSION['jigowatt']['user_level'] = $user_level;
+        $_SESSION['ssbidbuy']['user_level'] = $user_level;
 
-        $_SESSION['jigowatt']['email'] = $this->result['email'];
+        $_SESSION['ssbidbuy']['email'] = $this->result['email'];
 
-        $_SESSION['jigowatt']['gravatar'] = parent::get_gravatar($this->result['email'], true, 26);
+        $_SESSION['ssbidbuy']['gravatar'] = parent::get_gravatar($this->result['email'], true, 26);
 
         /** Check whether the user's level is disabled. */
         $stmt = $this->db->query("SELECT `level_disabled`, `redirect` FROM `".DB_PRE."login_levels` WHERE `id` = $user_level[0];");
 
         $disRow = $this->db->fetch($stmt);
 
-        if ( !empty($disRow['level_disabled']) ) $_SESSION['jigowatt']['level_disabled'] = 1;
+        if ( !empty($disRow['level_disabled']) ) $_SESSION['ssbidbuy']['level_disabled'] = 1;
         if ( !empty($disRow['redirect']) ) $redirect = $disRow['redirect'];
 
         // Stay signed via checkbox?
@@ -185,19 +185,19 @@ class Login_Model extends Model
 
         // And our magic happens here ! Let's sign them in
         $username = $this->username_type;
-        $_SESSION['jigowatt']['username'] = $this->result[$username];
+        $_SESSION['ssbidbuy']['username'] = $this->result[$username];
 
         // User ID of the logging in user
-        $_SESSION['jigowatt']['user_id'] = $this->result['user_id'];
+        $_SESSION['ssbidbuy']['user_id'] = $this->result['user_id'];
 
-        if ( empty($redirect) ) $redirect = $_SESSION['jigowatt']['referer'];
+        if ( empty($redirect) ) $redirect = $_SESSION['ssbidbuy']['referer'];
 
         unset(
-            $_SESSION['jigowatt']['referer'],
-            $_SESSION['jigowatt']['token'],
-            $_SESSION['jigowatt']['facebookMisc'],
-            $_SESSION['jigowatt']['twitterMisc'],
-            $_SESSION['jigowatt']['openIDMisc']
+            $_SESSION['ssbidbuy']['referer'],
+            $_SESSION['ssbidbuy']['token'],
+            $_SESSION['ssbidbuy']['facebookMisc'],
+            $_SESSION['ssbidbuy']['twitterMisc'],
+            $_SESSION['ssbidbuy']['openIDMisc']
         );
 
         // Redirect after it's all said and done

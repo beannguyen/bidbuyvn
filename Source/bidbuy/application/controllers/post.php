@@ -7,35 +7,49 @@ class postController extends Controller
         $this->loadModel('post');
     }
 
-    /**
-     * Show post for viewer
-     * @param string $categorySlug the slug of category which contain this post
-     * @param string $postSlug post slug
-     */
-    function post_show($categorySlug, $postSlug)
+    function postComment()
     {
-        // get post information
-        /* $this->view->postInfo = $this->model->getPostInfoBySlug($categorySlug, $postSlug);
-        $this->view->categorySlug = $categorySlug;
+        $timer = new timer();
+        $data = array();
+        foreach ( $_POST as $k => $v ) {
 
-        // if post not found, notfound flag is true
-        $notfound = false;
-        if ( $this->view->postInfo == false )
-            $notfound = true;
-        $this->view->notfound = $notfound;
+            $data[$k] = $v;
+        }
+        $data['comment_date'] = $timer->getDateTime();
+        $data['comment_approved'] = 0;
+        $res = $this->model->postComment( $data );
+        if ( $res )
+            echo json_encode( $data );
+        else
+            echo 0;
+    }
 
-        // render to view
-        if ( !$notfound ) {
+    function confirmPendingComment()
+    {
+        $comment_id = $_POST['comment_id'];
+        if ( $this->model->approvedComment( $comment_id ) ) {
 
-            // set page title
-            $this->view->title = $this->view->postInfo['post_title'];
+            echo '1';
+            return true;
+        } else {
 
-            // increment pageview
-            $this->model->incPostView( $this->view->postInfo['post_id'] );
-        } else
-            $this->view->title = 'Không tìm thấy bài viết';  */
-        // $this->view->render('frontend/header');
-        $this->view->render('frontend/single');
-        // $this->view->render('frontend/footer');
+            echo '0';
+            return false;
+        }
+
+    }
+
+    function deleteComment()
+    {
+        $comment_id = $_POST['comment_id'];
+        if ( $this->model->deleteComment( $comment_id ) ) {
+
+            echo '1';
+            return true;
+        } else {
+
+            echo '0';
+            return false;
+        }
     }
 }

@@ -12,14 +12,14 @@ class User_Model extends Model
         $this->db->connect();
     }
 
-    function getUserInfo($userId = 1)
+    public function getUserInfo($userId = 1)
     {
         $sql = "SELECT * FROM " . DB_PRE . "login_users WHERE user_id = " . $userId;
         $queryid = $this->db->query($sql);
         return $this->db->fetch($queryid);
     }
 
-    function getUserMeta($userId = 1)
+    public function getUserMeta($userId = 1)
     {
         $info = array(
             'date_of_birth' => '',
@@ -27,6 +27,9 @@ class User_Model extends Model
             'phone_num' => '',
             'job_title' => '',
             'website_url' => '',
+            'address' => '',
+            'city' => '',
+            'country' => '',
             'yahoo_im' => '',
             'skype' => '',
             'about' => ''
@@ -38,7 +41,6 @@ class User_Model extends Model
             $res = $this->db->fetch($q);
             $info[$key] = $res['meta_value'];
         }
-
         return $info;
     }
 

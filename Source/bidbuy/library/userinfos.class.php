@@ -11,7 +11,7 @@ class UserInfo
         $db->connect();
         if($user_id == false)
         {
-            return $_SESSION['jigowatt']['username'];
+            return $_SESSION['ssbidbuy']['username'];
         } else
         {
             $query = "SELECT username FROM ".DB_PRE."login_users WHERE user_id = $user_id";
@@ -21,7 +21,7 @@ class UserInfo
         }
     }
 
-    public static function getUserId($username = false)
+    public static function getUserId( $username = false )
     {
         // db connect
         $cnn = new Connect();
@@ -33,9 +33,11 @@ class UserInfo
         $use_emails = $generic->getOption('email-as-username-enable');
         $username_type = ( $use_emails ) ? 'email' : 'username';
         if($username == false)
-            return $_SESSION['jigowatt']['user_id'];
+            if ( isset( $_SESSION['ssbidbuy']['user_id'] ) )
+                return $_SESSION['ssbidbuy']['user_id'];
         else
         {
+            //var_dump( $username );
             $query = "SELECT user_id FROM ".DB_PRE."login_users WHERE {$username_type} = '$username'";
             $query_id = $db->query($query);
             $result = $db->fetch($query_id);

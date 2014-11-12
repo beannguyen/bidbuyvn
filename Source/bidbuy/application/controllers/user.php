@@ -22,6 +22,9 @@ class userController extends Controller
             'sex' => '',
             'phone_num' => '',
             'job_title' => '',
+            'address' => '',
+            'city' => '',
+            'country' => '',
             'website_url' => '',
             'yahoo_im' => '',
             'skype' => '',
@@ -31,7 +34,7 @@ class userController extends Controller
         // Update user info
         foreach($info as $key => $value)
         {
-            $info[$key] = $_POST[$key];
+            $info[$key] = $this->gen->secure( $_POST[$key] );
         }
         // Update user meta
         foreach($meta as $key => $value)

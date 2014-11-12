@@ -27,16 +27,16 @@ class loginController extends Controller
     function index($alert = false, $msg = '')
     {
         if ($this->gen->guestOnly()) { // Only guest can view this page
-            header('location: ' . URL::get_site_url() . '/dashboard');
+            header('location: ' . URL::get_site_url() . '/admin');
         } else {
 
             $this->view->use_emails = $this->gen->getOption('email-as-username-enable');
 
             // Redirect the logging in user
             if ($this->gen->getOption('signin-redirect-referrer-enable'))
-                $_SESSION['jigowatt']['referer'] = (!empty($_SESSION['jigowatt']['referer'])) ? $_SESSION['jigowatt']['referer'] : 'dashboard';
+                $_SESSION['ssbidbuy']['referer'] = (!empty($_SESSION['ssbidbuy']['referer'])) ? $_SESSION['ssbidbuy']['referer'] : 'dashboard';
             else
-                $_SESSION['jigowatt']['referer'] = $this->gen->getOption('signin-redirect-url');
+                $_SESSION['ssbidbuy']['referer'] = $this->gen->getOption('signin-redirect-url');
 
             // Are they attempting to access a secure page?
             if ($alert == 'secure')

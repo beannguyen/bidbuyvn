@@ -61,10 +61,10 @@ $generic = new Generic();
 </div>
 <!--  END PAGE HEADER -->
 <!-- POST ALERT -->
-<div class="alert alert-success <?php if( !isset( $_SESSION['jigowatt']['postUpdated'] ) && !$_SESSION['jigowatt']['postUpdated'] ) { echo 'display-hide'; } else unset($_SESSION['jigowatt']['postUpdated']); ?>">
+<div class="alert alert-success <?php if( !isset( $_SESSION['ssbidbuy']['postUpdated'] ) && !$_SESSION['ssbidbuy']['postUpdated'] ) { echo 'display-hide'; } else unset($_SESSION['ssbidbuy']['postUpdated']); ?>">
     <strong>Success!</strong> Bài viết đã được cập nhật thành công.
 </div>
-<div class="alert alert-success <?php if( !isset( $_SESSION['jigowatt']['postPublished'] ) && !$_SESSION['jigowatt']['postPublished'] ) { echo 'display-hide'; } else unset($_SESSION['jigowatt']['postPublished']); ?>">
+<div class="alert alert-success <?php if( !isset( $_SESSION['ssbidbuy']['postPublished'] ) && !$_SESSION['ssbidbuy']['postPublished'] ) { echo 'display-hide'; } else unset($_SESSION['ssbidbuy']['postPublished']); ?>">
     <strong>Success!</strong> Bài viết đã được đăng thành công.
 </div>
 <div id="product_validation" class="alert alert-warning alert-dismissable display-hide">

@@ -54,7 +54,7 @@
 <body class="login">
 <!-- BEGIN LOGO -->
 <div class="logo">
-    <img src="<?php echo URL::get_site_url(); ?>/public/dashboard/assets/img/logo-big.png" alt=""/>
+    <img src="<?php echo URL::get_site_url(); ?>/public/dashboard/assets/img/logo.png" alt=""/>
 </div>
 <!-- END LOGO -->
 <!-- BEGIN LOGIN -->
@@ -191,7 +191,7 @@
             <label class="checkbox">
                 <input type="checkbox" id="remember" name="remember" value="1"/><?php echo _('Ghi nhớ đăng nhập'); ?>
             </label>
-            <input type="hidden" id="token" name="token" value="<?php echo $_SESSION['jigowatt']['token']; ?>"/>
+            <input type="hidden" id="token" name="token" value="<?php echo $_SESSION['ssbidbuy']['token']; ?>"/>
             <input type="hidden" name="login" value="1"/>
             <button type="submit" class="btn green pull-right">
                 <?php echo _('Đăng nhập'); ?> <i class="m-icon-swapright m-icon-white"></i>
@@ -300,7 +300,7 @@
 <?php } ?>
 <!-- BEGIN COPYRIGHT -->
 <div class="copyright">
-    2013 &copy; Metronic. Admin Dashboard Template.
+    2014 &copy; BeBoard. Admin Dashboard Develop by BeanNguyen.
 </div>
 <!-- END COPYRIGHT -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->

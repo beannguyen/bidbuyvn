@@ -11,8 +11,8 @@ class userActivateController extends Controller
 
 
         // Assign their username to a variable
-        if(isset($_SESSION['jigowatt']['username']))
-            $this->user = $_SESSION['jigowatt']['username'];
+        if(isset($_SESSION['ssbidbuy']['username']))
+            $this->user = $_SESSION['ssbidbuy']['username'];
     }
 
     function index()

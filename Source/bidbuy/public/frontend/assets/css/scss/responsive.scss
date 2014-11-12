@@ -1,0 +1,353 @@
+@media (min-width: 1200px) {
+	.row {
+		.colums-9 {
+			width: 990px;
+		}
+		.colums-3 {
+			width: 240px;
+		}
+	}
+}
+
+@media (max-width: 1199px) {
+	.header {
+		.logo {
+			img {
+				width: 100%;
+			}
+		}
+	}
+
+	.main-form form{
+		width: auto;
+		input {
+			width: 200px;
+		}
+	}
+
+	.list-product {
+		.tab-links-bid {
+			ul {
+				li {
+					a {
+						font-size: 14px;
+						padding: 0 15px;
+					}
+				}
+				
+			}
+		}
+	}
+
+	.head-tabs {
+		ul {
+			a {
+				padding: 0 15px;
+			}
+		}
+	}
+
+	.footer {
+		.col-sm-3 {
+			width: 184px;
+		}
+
+		.col-large {
+			width: 375px;
+		}
+	}
+}
+
+@media (max-width: 991px) {
+	.main-nav {
+		.main-nav-tab {
+			li {
+				a {
+					padding: 0 10px;
+				}
+			}
+		}
+	}
+
+	.head-tabs {
+		ul {
+			a {
+				padding: 0 10px;
+				font-size: 12px;
+			}
+		}
+	}
+}
+
+@media (max-width: 991px) {
+	.main-slider {
+		height: auto;
+	}
+
+	.main-nav {
+		.main-nav-tab {
+			li {
+				a {
+					padding: 0 10px;
+				}
+			}
+		}
+	}
+
+	.list-product  {
+		.tab-links-bid {
+			ul {
+				li {
+					a {
+						padding: 0 6px;
+
+					}
+				}
+			}
+		}
+	}
+
+	.heading-sidebar {
+		h3 {
+			margin-left:0;
+		}
+	}
+
+	
+
+	.footer {
+		.col-md-3 {
+			min-height: 220px;
+
+		}
+	}
+}
+
+@media (min-width: 481px) and (max-width: 991px) {
+	.inner {
+		overflow: hidden;
+		min-height: 160px;
+		.image {
+			height: 160px;
+			float: left;
+			width: 200px;
+			margin-right: 10px;
+		}
+		.info {
+			margin-top: $baseline;
+		}
+	}
+
+	.main-form {
+		form {
+			.fancy-select {
+				width: 109px;
+
+				div.trigger {
+					width: 109px;
+				}
+			}
+		}
+
+		.user-menu-zone{
+			float: right;
+			width: 50px;
+			text-align: center;
+			position: relative;
+			i {
+				display: block;
+				height: 34px;
+				line-height: 34px;
+				font-size: 20px;
+				color: $color-main;
+				cursor: pointer;
+			}
+
+			ul {
+				display: none;
+				width: 100px;
+				height: auto;
+				background: $color-main;
+				position: absolute;
+				right: -5px;
+				top: 34px;
+				z-index: 999;
+				padding: 0 10px 0 0;
+				li {
+					display: block;
+					width: 100%;
+					padding:0 !important;
+					margin:0 !important;
+					text-align: right;
+					a {
+						border: none !important;
+						padding:0 !important;
+						color: #fff;
+					}
+				}
+			}
+
+			&:hover {
+				ul {
+					display: block;
+				}
+			}
+		}
+	}
+}
+
+@media (max-width: 767px) {
+	.header {
+		.logo {
+			text-align: center;
+			margin-bottom: $baseline;
+			img {
+				width: auto;
+			}
+		}
+
+		.top-link {
+			padding: 10px 0;
+			margin-bottom: $baseline;
+			text-align: center;
+		}
+	}
+
+	.main-form {
+		min-height: 160px;
+		width: 100%;
+		form {
+			display: block;
+			width: 100%;
+			height: auto;
+			margin-bottom: 5px;
+			.input {
+				display: block;
+				width: 100%;
+				background: transparent;
+			}
+			input[type="text"] {
+				width: 100%;
+				display: block;
+				margin-bottom: 2px;
+			}
+
+			.fancy-select  {
+				clear: both;
+				float: none;
+				width: 100%;
+				display: block;
+				margin-bottom: 2px;
+				div.trigger {
+					width: 100%;
+					
+				}
+				ul.options {
+					width: 100%;
+				}
+			}
+
+			button {
+				display: block;
+				width: 100%;
+				margin:0;
+			}
+
+			
+		}
+
+		.button-bid {
+			clear: both;
+		}
+	}
+
+	.main-nav {
+		.main-nav-tab {
+			height: auto;
+			li {
+				display: block;
+				width: 100%;
+				height: 40px;
+				line-height: 40px;
+				&:hover {
+					background: $color-main;
+				}
+			}
+			li.active {
+				background: $color-main;
+			}
+		}
+	}
+
+	
+
+	.list-product {
+		.tab-links-bid {
+			height: auto;
+			border: none;
+			ul {
+				li {
+					border: 1px solid $color-main;
+					margin: 0 2px 2px 0;
+					&:hover {
+						background: $color-main;
+					}
+				}
+
+				li.active {
+					background: $color-main;
+				}
+			}
+		}
+	}
+
+	.inner {
+		.info {
+			text-align: center;
+			p.btn {
+				vertical-align: top;
+				.price-start {
+					float: none;
+				}
+				.bid {
+					float: none;
+					line-height: 24px;
+				}
+			}
+		}
+	}
+
+	.tabs{
+		clear: both;
+	}
+
+	.head-tabs {
+		border: none;
+		height: auto;
+		ul {
+			li {
+				display: block;
+				width: 100%;
+				&:hover {
+					background: $color-main;
+				}
+			}
+			li.active {
+				background: $color-main; 
+			}
+		}
+	}
+
+	.para-product {
+		margin-top: $baseline;
+	}
+
+	.sample-product {
+		.col-lg-3 {
+			margin-top:15px;
+			margin-bottom: 15px;
+		}
+	}
+
+
+}

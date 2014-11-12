@@ -8,6 +8,10 @@ class uploadController extends Controller
         $this->loadModel('upload');
     }
 
+    /**
+     * add image to product details gallery
+     * @return bool
+     */
     function addGallery()
     {
         // process to upload file
@@ -29,6 +33,27 @@ class uploadController extends Controller
         }
     }
 
+    function addSlideImage()
+    {
+        // process to upload file
+        $imageSrc = $this->process( 'gallery' );
+        if ( $imageSrc == false ) {
+
+            return false;
+        } else {
+
+            // create image 960x282 to response text
+            $image960 = parent::getFileNameWithImageSize( $imageSrc, 960, 282 );
+            // response
+            return $image960;
+        }
+    }
+
+    /**
+     * upload processing
+     * @param bool $flag type of process for
+     * @return bool|string
+     */
     function process( $flag = false )
     {
         $generic = new Generic();
@@ -99,8 +124,8 @@ class uploadController extends Controller
                 //set the output format. We will save the images as jpg.
                 $output_format = 'jpeg';
                 // set height for image sizes
-                $thumbnail_heights = array(100, 112, 82, 60, 158, 100, 219, 53);
-                $thumbnail_widths = array(100, 153, 82, 60, 222, 132, 247, 70);
+                $thumbnail_widths =  array(100, 960, 193, 401, 51, 151);
+                $thumbnail_heights = array(100, 282, 141, 401, 51, 150);
                 //loop through the heights array above and create the different size image
                 $count = 0;
                 foreach ($thumbnail_heights as $thumbnail_height) {

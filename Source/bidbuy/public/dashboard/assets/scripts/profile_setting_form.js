@@ -69,12 +69,15 @@ var ProfileSetting = function () {
                 var email = $('.email').val();
                 var phone_num = $('.phone_num').val();
                 var job_title = $('.job_title').val();
+                var address = $('.address').val();
+                var city = $('.city').val();
+                var country = $('.country').val();
                 var website_url = $('.website_url').val();
                 var yahoo_im = $('.yahoo_im').val();
                 var skype = $('.skype').val();
                 var about = $('.about').val();
 
-                var datastring = 'userId=' + userId + '&name=' + name + '&date_of_birth=' + date_of_birth + '&sex=' + sex + '&email=' + email + '&phone_num=' + phone_num + '&job_title=' + job_title + '&website_url=' + website_url + '&yahoo_im=' + yahoo_im + '&skype=' + skype + '&about=' + about;
+                var datastring = 'userId=' + userId + '&name=' + name + '&date_of_birth=' + date_of_birth + '&sex=' + sex + '&email=' + email + '&phone_num=' + phone_num + '&job_title=' + job_title + '&address=' + address + '&city=' + city + '&country=' + country + '&website_url=' + website_url + '&yahoo_im=' + yahoo_im + '&skype=' + skype + '&about=' + about;
                 console.log(datastring);
                 var temp = false;
 
@@ -325,6 +328,11 @@ var ProfileSetting = function () {
             var tags2 = temp2.split(', ');
             $(".select2_user_group").select2({
                 tags: tags2
+            });
+
+            $("#country_select").select2({
+                placeholder: '<i class="icon-map-marker"></i>&nbsp;Select a Country',
+                allowClear: true
             });
         }
 

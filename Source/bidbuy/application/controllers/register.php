@@ -110,7 +110,6 @@ class registerController extends Controller
             $settings['user_group'] = parent::secure( $_POST['user_group'] );
             $settings['name'] = parent::secure( $_POST['fullname'] );
             $settings['email'] = parent::secure( $_POST['email'] );
-            var_dump($settings);
             //
             $metas['sex'] = parent::secure( $_POST['gender'] );
             $metas['date_of_birth'] = parent::secure( $_POST['dayofbirth'] );
@@ -118,7 +117,6 @@ class registerController extends Controller
             $metas['address'] = parent::secure( $_POST['address'] );
             $metas['city'] = parent::secure( $_POST['city'] );
             $metas['country'] = parent::secure( $_POST['country'] );
-            var_dump($metas);
 
             $response = $this->model->registerProcess( $settings, $metas );
             // after register

@@ -40,7 +40,7 @@ class themeController extends Controller
                 $category = $taxonomyModel->getTaxonomy( $val );
                 // create data
                 $item = $category['name'];
-                $link = URL::get_site_url() . '/category/' . $category['slug'] . '.html';
+                $link = URL::get_site_url() . '/category/'. $category['term_id'] . '/' . $category['slug'] . '.html';
                 $result = $this->model->createMenu( $type, $item, $link );
 
                 if ( $result === 'db_error' )
@@ -133,20 +133,72 @@ class themeController extends Controller
         return $return;
     }
 
-    function updateHomeBoxOption() {
+    function updateSlideSettings()
+    {
+        if ( isset( $_POST ) ) { // if form is submitted
 
-        if ( isset( $_POST['home_box_multi_select'] ) ) {
+            // hold all data
+            $options = array();
+            // upload image first
+            if ( $_FILES['file']["tmp_name"] !== '' ) {
 
-            $categories = $_POST['home_box_multi_select'];
-            $res = $this->model->updateHomeBoxOption( $categories );
-            // if updated
+                require_once ( 'upload.php' );
+                $upload = new uploadController();
+                $imgSRC = $upload->addSlideImage();
+                if ( $imgSRC != false)
+                    $options['slider_image'] = $imgSRC;
+                else
+                    $options['slider_image'] = '';
+            }
+
+            // create option array
+            foreach ( $_POST as $k => $v ) {
+
+                if ( $k != 'file' ) {
+
+                    $options[$k] = parent::secure( $v );
+                }
+            }
+            $res = $this->model->updateSlideSetting( $options );
+
             if ( $res ) {
-                URL::redirect_to( URL::get_site_url() . '/admin/dashboard/theme_option/updated' );
+
+                $_SESSION['ssbidbuy']['updated'] = true;
             } else {
-                URL::redirect_to( URL::get_site_url() . '/admin/dashboard/theme_option/failed' );
+
+                $_SESSION['ssbidbuy']['updated'] = false;
             }
         } else {
-            URL::redirect_to( URL::get_site_url() . '/admin/dashboard/theme_option/failed' );
+
+            $_SESSION['ssbidbuy']['updated'] = false;
         }
+        // go back
+        URL::goBack();
+        exit();
+    }
+
+    function updateFooterWidget()
+    {
+        if ( isset( $_POST ) ) {
+
+            foreach ( $_POST as $k => $v ) {
+
+                $options[$k] = parent::secure( $v );
+            }
+
+            $res = $this->model->updateFooterWidget( $options );
+            if ( $res ) {
+
+                $_SESSION['ssbidbuy']['updated'] = true;
+            } else {
+
+                $_SESSION['ssbidbuy']['updated'] = false;
+            }
+        } else {
+
+            $_SESSION['ssbidbuy']['updated'] = false;
+        }
+        URL::goBack();
+        exit();
     }
 }

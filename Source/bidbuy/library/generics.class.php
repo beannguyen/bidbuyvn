@@ -98,11 +98,12 @@ class Generic extends Connect
      * If an option exists in the database, it will be updated. If it does not exist,
      * the option will be created.
      *
-     * @param     string    $option      Name of option to retrieve.
-     * @param     bool      $newvalue    Option's new value to set.
-     * @param     bool      $profile     Whether to update a profile field, or an admin setting.
-     * @param     int       $id          Required if profile is true; the user_id of a user.
-     * @return    bool      Whether the update was successful or not.
+     * @param $option
+     * @param $newvalue
+     * @param bool $profile
+     * @param bool $permission
+     * @param string $id
+     * @return bool|id|query_id
      */
     public function updateOption($option, $newvalue, $profile = false, $permission = false, $id = '')
     {
@@ -240,7 +241,7 @@ class Generic extends Connect
      */
     public function denyAccessLogs() {
 
-        return ( ($this->getOption('profile-timestamps-admin-enable') && !in_array(1, $_SESSION['jigowatt']['user_level'])) || !$this->getOption('profile-timestamps-enable') );
+        return ( ($this->getOption('profile-timestamps-admin-enable') && !in_array(1, $_SESSION['ssbidbuy']['user_level'])) || !$this->getOption('profile-timestamps-enable') );
 
     }
 
@@ -286,7 +287,7 @@ class Generic extends Connect
      */
     public function guestOnly() {
 
-        if(!empty($_SESSION['jigowatt']['username'])) {
+        if(!empty($_SESSION['ssbidbuy']['username'])) {
             return true;
         }
 
@@ -301,8 +302,8 @@ class Generic extends Connect
      */
     public function generateToken() {
 
-        if(empty($_SESSION['jigowatt']['token']))
-            $_SESSION['jigowatt']['token'] = md5(uniqid(mt_rand(),true));
+        if(empty($_SESSION['ssbidbuy']['token']))
+            $_SESSION['ssbidbuy']['token'] = md5(uniqid(mt_rand(),true));
 
     }
 
@@ -314,10 +315,10 @@ class Generic extends Connect
      */
     public function valid_token($token) {
 
-        if (empty($_SESSION['jigowatt']['token']))
+        if (empty($_SESSION['ssbidbuy']['token']))
             return false;
 
-        if ($_SESSION['jigowatt']['token'] != $token)
+        if ($_SESSION['ssbidbuy']['token'] != $token)
             return false;
 
         return true;

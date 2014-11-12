@@ -48,7 +48,7 @@ class dashboardController extends Controller
          *
          * Good bye friend :(. Promise you'll come back?!
          */
-        if (isset($_SESSION['jigowatt']['username'])) :
+        if (isset($_SESSION['ssbidbuy']['username'])) :
             session_unset();
             session_destroy();
         endif;
@@ -269,8 +269,9 @@ class dashboardController extends Controller
         $this->view->active_setting = 'active';
 
         $this->loadModel('setting');
-        $this->view->settings['site_title'] = $this->model->getSettings('site_title');
-        $this->view->settings['admin_email'] = $this->model->getSettings('admin_email');
+        $this->view->settings['site_title'] = $this->model->getSettings( 'site_title' );
+        $this->view->settings['admin_email'] = $this->model->getSettings( 'admin_email' );
+        $this->view->settings['hotline_support'] = $this->model->getSettings( 'hotline_support' );
 
         $this->view->js[] = 'scripts/general_setting.js';
         $this->view->loadJS[] = 'General_Setting';
@@ -390,12 +391,44 @@ class dashboardController extends Controller
 
         $this->view->css[] = 'plugins/jquery-multi-select/css/multi-select.css';
 
-        // get response text
-        if ( $response === 'updated' ) {
-            $this->view->updateStatus = 'updated';
-        } elseif ( $response === 'failed' ) {
-            $this->view->updateStatus = 'failed';
-        }
+        // get options
+        $this->loadModel('theme');
+        $this->view->options['main_slide'] = array(
+            'slider_title_1' => $this->model->getThemeOption( 'slider_title_1' ),
+            'slider_description_1' => $this->model->getThemeOption( 'slider_description_1' ),
+            'slider_image_1' => $this->model->getThemeOption( 'slider_image_1' ),
+            'slider_enabled_1' => $this->model->getThemeOption( 'slider_enabled_1' ),
+            'slider_title_2' => $this->model->getThemeOption( 'slider_title_2' ),
+            'slider_description_2' => $this->model->getThemeOption( 'slider_description_2' ),
+            'slider_image_2' => $this->model->getThemeOption( 'slider_image_2' ),
+            'slider_enabled_2' => $this->model->getThemeOption( 'slider_enabled_2' ),
+            'slider_title_3' => $this->model->getThemeOption( 'slider_title_3' ),
+            'slider_description_3' => $this->model->getThemeOption( 'slider_description_3' ),
+            'slider_image_3' => $this->model->getThemeOption( 'slider_image_3' ),
+            'slider_enabled_3' => $this->model->getThemeOption( 'slider_enabled_3' ),
+            'slider_title_4' => $this->model->getThemeOption( 'slider_title_4' ),
+            'slider_description_4' => $this->model->getThemeOption( 'slider_description_4' ),
+            'slider_image_4' => $this->model->getThemeOption( 'slider_image_4' ),
+            'slider_enabled_4' => $this->model->getThemeOption( 'slider_enabled_4' ),
+            'slider_title_5' => $this->model->getThemeOption( 'slider_title_5' ),
+            'slider_description_5' => $this->model->getThemeOption( 'slider_description_5' ),
+            'slider_image_5' => $this->model->getThemeOption( 'slider_image_5' ),
+            'slider_enabled_5' => $this->model->getThemeOption( 'slider_enabled_5' ),
+        );
+
+        $this->view->social = array(
+            'facebook_link' => $this->gen->getOption( 'facebook_link' ),
+            'youtube_link' => $this->gen->getOption( 'youtube_link' ),
+            'googleplus_link' => $this->gen->getOption( 'googleplus_link' ),
+            'googleplay_link' => $this->gen->getOption( 'googleplay_link' ),
+            'appstore_link' => $this->gen->getOption( 'appstore_link' )
+        );
+
+        $this->view->footer = array(
+            'footer_text' => $this->gen->getOption( 'footer_text' ),
+            'footer_column_3' => $this->gen->getOption( 'footer_column_3' ),
+            'footer_column_4' => $this->gen->getOption( 'footer_column_4' )
+        );
 
         $this->view->render('dashboard/header');
         $this->view->render('dashboard/theme/theme-option');
@@ -433,14 +466,114 @@ class dashboardController extends Controller
         $this->view->render( 'dashboard/footer' );
     }
 
-    function orders()
+    function ordersforseller( $filterString = '' )
     {
+        $this->loadModel( 'product' );
+        // if user can not post new thread
+        if ( !$this->gen->getPermission( UserInfo::getUserId(), 'can_manager_invoices' ) ) {
+            URL::redirect_to( URL::get_site_url().'/admin/accessdeny' );
+            exit();
+        }
+
+        // get filter
+        if ( $filterString !== '' ) {
+
+            $filters = parent::getFilters( $filterString );
+        } else {
+
+            // set default settings
+            $filters['page'] = 1;
+        }
+
+        $orders = $this->model->getAllOrders( $filters );
+        $archives = $archives = $this->model->getArchives( 'orders' );
+
+        if ( $orders != FALSE )
+            $this->view->orders = $orders;
+        $this->view->archives = $archives;
+        $this->view->filters = $filters;
+
+        $this->view->js[] = 'scripts/all-orders.js';
+        $this->view->loadJS[] = 'Orders';
+
         $this->view->title = "Quản lý hóa đơn";
-        $this->view->orders = "active";
+        $this->view->activeorders = "active";
         $this->view->active_post = "active";
+        $this->view->activesellerorders = 'active';
 
         $this->view->render( 'dashboard/header' );
         $this->view->render( 'dashboard/ecommerce/orders' );
+        $this->view->render( 'dashboard/footer' );
+    }
+
+    function ordersforbuyer( $filterString = '' )
+    {
+        $this->loadModel( 'product' );
+        // if user can not post new thread
+        if ( !$this->gen->getPermission( UserInfo::getUserId(), 'can_bid' ) ) {
+            URL::redirect_to( URL::get_site_url().'/admin/accessdeny' );
+            exit();
+        }
+
+        // get filter
+        if ( $filterString !== '' ) {
+
+            $filters = parent::getFilters( $filterString );
+        } else {
+
+            // set default settings
+            $filters['page'] = 1;
+        }
+
+        $orders = $this->model->getAllOrders( $filters, 'buyer' );
+        $archives = $archives = $this->model->getArchives( 'orders' );
+
+        if ( $orders != FALSE )
+            $this->view->orders = $orders;
+        $this->view->archives = $archives;
+        $this->view->filters = $filters;
+
+        $this->view->js[] = 'scripts/all-orders.js';
+        $this->view->loadJS[] = 'Orders';
+
+        $this->view->title = "Quản lý hóa đơn";
+        $this->view->activeorders = "active";
+        $this->view->active_post = "active";
+        $this->view->activebuyerorders = 'active';
+
+        $this->view->render( 'dashboard/header' );
+        $this->view->render( 'dashboard/ecommerce/orders' );
+        $this->view->render( 'dashboard/footer' );
+    }
+
+    function mybids( $filterString = '' )
+    {
+        // if user can not post new thread
+        if ( !$this->gen->getPermission( UserInfo::getUserId(), 'can_bid' ) ) {
+            URL::redirect_to( URL::get_site_url().'/admin/accessdeny' );
+            exit();
+        }
+        // get filter
+        if ( $filterString !== '' ) {
+
+            $filters = parent::getFilters( $filterString );
+        } else {
+
+            // set default settings
+            $filters['page'] = 1;
+        }
+        // load model
+        $this->loadModel('biding');
+        $listbids = $this->model->loadListBidForBuyer( UserInfo::getUserId(), $filters );
+        if ( $listbids !== false )
+            $this->view->listbids = $listbids;
+
+        $this->view->title = "Quản lý các sản phẩm đã đấu giá";
+        $this->view->mybids = "active";
+        $this->view->active_post = "active";
+
+        $this->view->render( 'dashboard/header' );
+        $this->view->render( 'dashboard/ecommerce/my-bids' );
         $this->view->render( 'dashboard/footer' );
     }
 
@@ -465,7 +598,7 @@ class dashboardController extends Controller
 
         // get list post
         $this->loadModel( 'product' );
-        $products = $this->model->getAllProducts( $filters, $filterString );
+        $products = $this->model->getAllProducts( $filters, 'backend' );
         $archives = $this->model->getArchives();
         // render to view
         if ( $products != false )
@@ -488,6 +621,41 @@ class dashboardController extends Controller
 
         $this->view->render( 'dashboard/header' );
         $this->view->render( 'dashboard/ecommerce/products' );
+        $this->view->render( 'dashboard/footer' );
+    }
+
+
+    function comments( $filterString = '' )
+    {
+        // if user can not post new thread
+        if ( !$this->gen->getPermission( UserInfo::getUserId(), 'can_manager_comments' ) ) {
+            URL::redirect_to( URL::get_site_url().'/admin/accessdeny' );
+            exit();
+        }
+
+        $this->loadModel('post');
+
+        // get filter
+        if ( $filterString !== '' ) {
+
+            $filters = parent::getFilters( $filterString );
+        } else {
+
+            // set default settings
+            $filters['status'] = 'on-process';
+            $filters['page'] = 1;
+        }
+
+        $comments = $this->model->getAllComments( $filters );
+
+        $this->view->comments = $comments;
+        $this->view->js[] = 'scripts/comment-action.js';
+
+        $this->view->title = "Quản lý nhận xét";
+        $this->view->active_comment = "active";
+
+        $this->view->render( 'dashboard/header' );
+        $this->view->render( 'dashboard/comments/index' );
         $this->view->render( 'dashboard/footer' );
     }
 

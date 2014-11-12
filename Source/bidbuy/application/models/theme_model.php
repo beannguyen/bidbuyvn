@@ -103,6 +103,7 @@ class Theme_Model extends Model
 
     /**
      * create HTML text for menu nestable list
+     * @param string $type type for menu
      * @return string
      */
     function getMenu( $type ) {
@@ -137,7 +138,7 @@ class Theme_Model extends Model
 
             foreach ( $parentItems as $k => $v ) {
 
-                $responseText .= "<li>";
+                $responseText .= "<li class='menu-item'>";
                 $responseText .= '<a href="'. $v['_menu_item_url'] .'">' . $v['name'] . '</a>';
                 $responseText .= $this->createMenuAsHTML( $type, $v['id'] );
                 $responseText .= "</li>";
@@ -301,49 +302,69 @@ class Theme_Model extends Model
         return 'deleted';
     }
 
-    /**
-     * update list category id for home box
-     * @param $categories
-     * @return bool
-     */
-    function updateHomeBoxOption( $categories ) {
+    function updateSlideSetting( $options )
+    {
+        $n = $options['slider'];
+        $error = 0;
+        foreach ( $options as $key => $val ) {
 
-        // delete all box on db and recreate
-        $sql = "DELETE FROM `" . DB_PRE . "theme_options` WHERE 1";
-        $this->db->query( $sql );
-        // insert each category id to db
-        foreach ( $categories as $k => $v ) {
+            if ( $key !== 'slider' ) {
 
-            // check if it already existed
-            $sql = "SELECT * FROM ".DB_PRE."theme_options WHERE object_id = ".$v;
-            $query = $this->db->query( $sql );
-            if ( $this->db->numrows( $query ) > 0 ) {
+                // create data for update/insert statement
+                $data = array(
 
-                // already exist
-                $update = "UPDATE " . DB_PRE . "theme_options SET stt = " . $k . " WHERE object_id = " . $v;
-                $this->db->query( $update );
-            } else {
+                    'option_name' => $key . '_' . $n,
+                    'option_value' => $val
+                );
 
-                $insert = "INSERT INTO " . DB_PRE . "theme_options (stt, box_type, object_id) VALUES (".$k.", 'category', ".$v.")";
-                $this->db->query( $insert );
+                // is option_name existed?
+                $sql = "SELECT *
+                        FROM ". DB_PRE ."theme_option
+                        WHERE option_name = '". $data['option_name'] ."'";
+                $query = $this->db->query( $sql );
+
+                if ( $this->db->numrows( $query ) > 0 ) { // option name exist
+
+                    $update = "UPDATE ". DB_PRE ."theme_option
+                                SET option_value = '". $data['option_value'] ."'
+                                WHERE option_name = '". $data['option_name'] ."'";
+                } else {
+
+                    $update = "INSERT INTO ". DB_PRE ."theme_option(option_name, option_value)
+                                VALUES ('". $data['option_name'] ."', '". $data['option_value'] ."')";
+                }
+                // execute query
+                if ( !$this->db->query( $update ) )
+                    $error++;
             }
         }
-        return true;
+        if ( $error == 0 )
+            return true;
+        return false;
     }
 
-    function getHomeBox () {
-
-        $sql = "SELECT object_id
-                FROM " . DB_PRE . "theme_options
-                ORDER BY stt";
+    function getThemeOption( $option )
+    {
+        $sql = "SELECT option_value FROM ". DB_PRE ."theme_option
+                WHERE option_name = '" . $option ."'";
         $query = $this->db->query( $sql );
 
-        // create categories id
-        $categories = array();
-        while ( $result = $this->db->fetch( $query ) ) {
+        if ( $this->db->numrows( $query ) > 0 ) {
 
-            $categories[] = $result['object_id'];
+            return $this->db->fetch( $query )['option_value'];
+        } else {
+
+            return '';
         }
-        return $categories;
+    }
+
+    function updateFooterWidget( $options )
+    {
+        foreach ( $options as $key => $val ) {
+
+            parent::updateOption( $key, $val );
+        }
+
+        return true;
     }
 }

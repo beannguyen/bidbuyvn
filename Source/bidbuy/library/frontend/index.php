@@ -56,9 +56,23 @@ function error()
 
 function callHook() {
 
+    global $get, $http_error;
+
+    if ( $http_error ) {
+
+        error();
+        exit();
+    }
+
     require(ROOT . DS . 'application' . DS . 'controllers' . DS . 'frontend.php');
     $controller = new frontendController();
-    $controller->index();
+    if ( isset( $get ) ) {
+
+        $controller->index( $get );
+    } else {
+
+        $controller->index();
+    }
 }
 
 setReporting();

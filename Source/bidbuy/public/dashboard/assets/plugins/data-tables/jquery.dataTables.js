@@ -9765,7 +9765,7 @@
 		 *    $(document).ready( function() {
 		 *      $('#example').dataTable( {
 		 *        "bServerSide": true,
-		 *        "sAjaxSource": "scripts/post.php",
+		 *        "sAjaxSource": "scripts/product.php",
 		 *        "sServerMethod": "POST"
 		 *      } );
 		 *    } );

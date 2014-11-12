@@ -117,6 +117,25 @@ class Taxonomy_Model extends Model
         return 0;
     }
 
+    /**
+     * find a taxonomy if it already existed return true
+     * @param $taxonomyId
+     * @param $type string tag|category
+     * @return bool
+     */
+    function findTaxonomyById( $taxonomyId, $type = 'category' )
+    {
+        $sql = "select " . DB_PRE . "terms.term_id
+                from " . DB_PRE . "terms, " . DB_PRE . "term_taxonomy
+                where " . DB_PRE . "terms.term_id = " . DB_PRE . "term_taxonomy.term_id
+                and " . DB_PRE . "term_taxonomy.taxonomy = '". $type ."'
+                and " . DB_PRE . "terms.term_id = '" . $taxonomyId . "'";
+        $query = $this->db->query( $sql );
+        if ( $this->db->numrows( $query ) > 0 )
+            return true;
+        return false;
+    }
+
     public function getParentTaxonomy($term_id, $select = false)
     {
         $sql = "SELECT " . DB_PRE . "terms.term_id, " . DB_PRE . "terms.name, " . DB_PRE . "terms.slug, " . DB_PRE . "term_taxonomy.description FROM " . DB_PRE . "terms, " . DB_PRE . "term_taxonomy WHERE " . DB_PRE . "term_taxonomy.parent = " . DB_PRE . "terms.term_id AND " . DB_PRE . "term_taxonomy.term_id = " . $term_id;
@@ -339,44 +358,62 @@ class Taxonomy_Model extends Model
         $this->db->insert($table, $data);
     }
 
-    private function getAllPostInCategory( $categoryId )
+    private function getAllProductInCategory( $categoryId, $filters )
     {
-        $sql = "SELECT ". DB_PRE ."term_relationships.object_id
-                FROM ". DB_PRE ."term_relationships, ". DB_PRE ."term_taxonomy
-                WHERE ". DB_PRE ."term_relationships.term_taxonomy_id = ". DB_PRE ."term_taxonomy.term_taxonomy_id
-                    AND ". DB_PRE ."term_taxonomy.taxonomy = 'category'
-                    AND ". DB_PRE ."term_taxonomy.term_id = ". $categoryId ."
-                LIMIT 8";
-        $query = $this->db->query( $sql );
+        $sql = "SELECT " . DB_PRE . "term_relationships.object_id
+                FROM " . DB_PRE . "term_relationships, " . DB_PRE . "term_taxonomy, " . DB_PRE . "posts
+                WHERE " . DB_PRE . "term_relationships.term_taxonomy_id = " . DB_PRE . "term_taxonomy.term_taxonomy_id
+                AND " . DB_PRE . "term_taxonomy.taxonomy = 'category'
+                AND " . DB_PRE . "term_relationships.object_id = " . DB_PRE . "posts.ID
+                ANd " . DB_PRE . "posts.post_type = 'product'
+                AND " . DB_PRE . "posts.post_status = 'on-process'
+                AND " . DB_PRE . "term_taxonomy.term_id = " . $categoryId;
+
+        // init page navigation
+        if ( isset( $filters['page'] ) ) {
+
+            $page = $filters['page'];
+        } else
+            $page = 1;
+        $url = URL::curURL();
+
+        $pager = new PageNavigation( $sql, 4, 5, $url, $page, '', 'frontend' );
+
+        // get sql added limit
+        $newSql = $pager->paginate();
+
+        $query = $this->db->query( $newSql );
 
         if ( $this->db->numrows( $query ) > 0 ) {
 
             // if have post
-            $posts = array();
+            $products = array();
             while ( $row = $this->db->fetch( $query ) ) {
 
-                $posts[] = $row['object_id'];
+                $products[] = $row['object_id'];
             }
-            return $posts;
+            $products['navigation'] = $pager->renderFullNav( '<i class="icon-angle-left"></i>', '<i class="icon-angle-right"></i>' );
+            return $products;
         } else {
 
             return false;
         }
     }
 
-    function getListPostInCategory($categorySlug)
+    function getListProductInCategory( $categoryId, $filters )
     {
-        // get category by slug
-        $categoryId = $this->getCategoryIdBySlug($categorySlug);
         // get all post Id of this category
-        $posts = $this->getAllPostInCategory( $categoryId );
+        $products = $this->getAllProductInCategory( $categoryId, $filters );
+        $navigation = $products['navigation'];
+        unset( $products['navigation'] );
         // if have post
-        if ( $posts != false ) {
+        if ( $products != false ) {
 
             require_once(ROOT . DS . 'application/models/widget_model.php');
             $widgetModel = new Widget_Model();
-            $postInfo = $widgetModel->getPostInfo( $posts );
-            return $postInfo;
+            $productInfo = $widgetModel->getProductInfo( $products );
+            $productInfo['navigation'] = $navigation;
+            return $productInfo;
         } else {
 
             return false;

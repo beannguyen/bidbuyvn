@@ -1,0 +1,30 @@
+$color-light: #f4f2f2;
+$color-border-dark: #ccc;
+$color-border-light: #dfdfdf;
+$color-dark: #4c4b49;
+$color-main: #d54fa6;
+
+$font-size: 14px;
+$font-size-small: 12px;
+$baseline: $font-size*1.5;
+
+.text-right {
+	text-align: right;
+}
+.text-left {
+	text-align: left;
+}
+
+.text-center {
+	text-align: center;
+}
+
+body {
+	font-size: 12px;
+}
+
+a {
+	outline: none;
+	
+}
+

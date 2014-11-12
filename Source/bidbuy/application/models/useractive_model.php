@@ -11,8 +11,8 @@ class Useractive_Model extends Model
         parent::__construct();
         $this->db->connect();
         // Assign their username to a variable
-        if(isset($_SESSION['jigowatt']['username']))
-            $this->user = $_SESSION['jigowatt']['username'];
+        if(isset($_SESSION['ssbidbuy']['username']))
+            $this->user = $_SESSION['ssbidbuy']['username'];
 
         // Display any errors
         parent::displayMessage($this->error, false);
@@ -40,7 +40,7 @@ class Useractive_Model extends Model
         $this->db->query("DELETE FROM `".DB_PRE."login_confirm` WHERE `username` = '$username' AND `type` = 'new_user';");
 
         // Set user's activate session to false
-        if(!empty($_SESSION['jigowatt']['activate'])) unset($_SESSION['jigowatt']['activate']);
+        if(!empty($_SESSION['ssbidbuy']['activate'])) unset($_SESSION['ssbidbuy']['activate']);
 
         $shortcodes = array(
             'site_address'	=>	URL::get_site_url(),

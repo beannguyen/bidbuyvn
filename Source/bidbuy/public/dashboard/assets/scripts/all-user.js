@@ -10,7 +10,7 @@ var AllUserManaged = function () {
         // tên đăng nhập đã tồn tại hay chưa
         $.validator.addMethod("existedUsername", function (value, element) {
 
-            $("span.loading").html("<img src='http://localhost/batdongsan/public/dashboard/assets/img/loading.gif'>");
+            $("span.loading").html("<img src='"+ getRootWebSitePath() +"/public/dashboard/assets/img/loading.gif'>");
             var datastring = 'username=' + value;
             // console.log(datastring);
             var temp = false;

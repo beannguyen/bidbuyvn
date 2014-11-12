@@ -62,47 +62,48 @@ class Widget_Model extends Model
         }
     }
 
-    function related_post( $postId, $categorySlug )
+    function related_product($productId, $categorySlug)
     {
-        // get 5 posts in the category
+        // get 4 posts in the category
         $sql = "SELECT ID
                 FROM " . DB_PRE . "posts, (SELECT " . DB_PRE . "term_relationships.object_id
                                 FROM " . DB_PRE . "terms, " . DB_PRE . "term_taxonomy, " . DB_PRE . "term_relationships
                                 WHERE " . DB_PRE . "terms.term_id = " . DB_PRE . "term_taxonomy.term_id
                                     AND " . DB_PRE . "term_taxonomy.term_taxonomy_id = " . DB_PRE . "term_relationships.term_taxonomy_id
-                                    AND " . DB_PRE . "terms.slug = '". $categorySlug ."') AS tb1
+                                    AND " . DB_PRE . "terms.slug = '" . $categorySlug . "') AS tb1
                 WHERE " . DB_PRE . "posts.ID = tb1.object_id
-                    AND " . DB_PRE . "posts.post_status = 'publish'
-                    AND tb1.object_id != " . $postId . "
+                    AND " . DB_PRE . "posts.post_status = 'on-process'
+                    AND tb1.object_id != " . $productId . "
+                    AND " . DB_PRE . "posts.post_type = 'product'
                 ORDER BY " . DB_PRE . "posts.post_date
-                LIMIT 5";
+                LIMIT 4";
         $query = $this->db->query($sql);
         // check if no have post
         if ($this->db->numrows($query) > 0) {
 
-            $posts = array();
+            $products = array();
             while ($row = $this->db->fetch($query)) {
 
                 // create an array to hold the post id
-                $posts[] = $row['ID'];
+                $products[] = $row['ID'];
             }
             // get post information
-            $postInfo = $this->getPostInfo($posts);
-            return $postInfo;
+            $productInfo = $this->getProductInfo($products);
+            return $productInfo;
         } else // if no have post
             return false;
     }
 
-    function getPostInfo($posts)
+    function getProductInfo($productId)
     {
-        require_once(ROOT . DS . 'application/models/post_model.php');
-        $postModel = new Post_Model();
-        $postInfo = array(); // store all post information
-        foreach ($posts as $k => $v) {
+        require_once(ROOT . DS . 'application/models/product_model.php');
+        $productModel = new Product_Model();
+        $productInfo = array(); // store all post information
+        foreach ($productId as $k => $v) {
 
-            $postInfo[$v] = array();
-            $postInfo[$v] = $postModel->getPostInfo($v);
+            $productInfo[$v] = array();
+            $productInfo[$v] = $productModel->getProductInfo($v);
         }
-        return $postInfo;
+        return $productInfo;
     }
 }

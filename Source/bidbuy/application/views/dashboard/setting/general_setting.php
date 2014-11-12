@@ -59,6 +59,12 @@ require_once(ROOT . DS . 'application/views/dashboard/sidebar.php');
                                     <input type="text" id="email_address" name="email_address" class="form-control"  placeholder="Nhập địa chỉ Email của người quản trị" value="<?php if(!empty($this->settings)) echo $this->settings['admin_email']; ?>">
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label  class="col-md-3 control-label">Hotline</label>
+                                <div class="col-md-9">
+                                    <input type="text" id="hotline_support" name="hotline_support" class="form-control"  placeholder="Số điện thoại sẽ hiện thị ra trang chủ" value="<?php if(!empty($this->settings)) echo $this->settings['hotline_support']; ?>">
+                                </div>
+                            </div>
                         </div>
                 </div>
                 <div class="form-actions fluid">

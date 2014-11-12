@@ -1,0 +1,178 @@
+.header {
+	background-color: $color-light;
+	border-bottom: 1px solid $color-border-dark;
+	
+	padding-bottom: $baseline;
+}
+
+.logo {
+}
+
+.top-link {
+	@extend .text-right;
+	padding-top: $baseline*1.5;
+	font-family: Tahoma;
+	font-size: 11px;
+	span {
+		margin-left: $baseline;
+		&:nth-child(2) {
+			img {
+				margin-top: -1px;
+			}
+			
+		}
+		a {
+			color: #000;
+		}
+	}
+}
+
+.main-form  {
+	background-color: $color-dark;
+	height: $baseline*2 + 2;
+	padding: 5px;
+	font-size: $font-size-small -1;
+	font-family: Tahoma;
+	margin-top: 10px;
+
+	form, .button-bid, .user-menu-zone {
+		float: left;
+
+	}
+
+	form {
+		height: 34px;
+		width: 600px;
+		
+		.input{
+			background: #fff;
+			float: left;
+		}
+		input {
+			height: 34px;
+			border: none;
+			border-right: 1px solid $color-border-dark;
+			width: 345px;
+			padding: 0 10px;
+			float: left;
+		}
+
+		select {
+			width: 165px;
+			border: none;
+			font-size: $font-size-small;
+		}
+		button {
+			border: none;
+			height: 34px;
+			width: 55px;
+			margin-left: 2px;
+			background: $color-main url(images/icon/search.png) no-repeat center;
+			text-indent: -999999px;
+		}
+
+		.fancy-select {
+			float: left;
+			width: 165px;
+
+			div.trigger {
+				padding: 0 0 0 10px;
+				height: 34px;
+				line-height: 34px;
+				border-radius: 0;
+				background: #fff;
+				width: 165px;
+				border: none;
+				box-shadow: none;
+				text-transform: none;
+				font-size: 12px;
+				font-weight: normal;
+				color: #000;
+				&:after {
+					top: 15px;
+				}
+			}
+			ul.options {
+				padding:0;
+				background: #fff;
+				min-width: 165px;
+				border-radius: 0;
+				border: none;
+				li {
+					font-size: 12px;
+					color: #000;
+					text-transform: capitalize;
+
+					font-weight: normal;
+					&:hover {
+						color: $color-main;
+					}
+				}
+				li.selected {
+					background: $color-main;
+					color: #fff;
+				}
+			}
+		}
+	}
+
+	.button-bid {
+		background: url(images/icon/cart.png) no-repeat right center;
+		height: 34px;
+		line-height: 34px;
+		margin-left: 20px;
+		padding-right: 25px;
+		position: relative;
+		a {
+			color: $color-main;
+			text-transform: capitalize;
+		}
+
+		span.number {
+			display: block;
+			height: 20px;
+			width: 20px;
+			line-height: 16px;
+			text-align: center;
+			-webkit-border-radius: 20px;
+			-moz-border-radius: 20px;
+			border-radius: 20px;
+			background: $color-main;
+			color: #fff;
+			border: 1px solid #fff;
+			position: absolute;
+			top: 0px;
+			right: -20px;
+			a {
+				color: #fff;
+				font-size: 11px;
+			}
+		}
+	}
+
+	.user-menu-zone {
+		i {
+			display: none;
+		}
+		ul {
+			list-style: none;
+			margin:0;
+			height: 34px;
+			line-height: 34px;
+			li {
+				display: inline-block;
+				margin-right: 10px;
+				a {
+					color: $color-main;
+
+				}
+				&:first-child {
+					a {
+						border-right: 1px solid ;
+						padding-right: 10px;
+					}
+				}
+			}
+		}
+	}
+}

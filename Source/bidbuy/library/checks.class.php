@@ -26,9 +26,9 @@ class Check extends Generic {
     private function isGuest($forceLogin) {
 
         if ( !$forceLogin )
-            return empty( $_SESSION['jigowatt']['user_id'] );
+            return empty( $_SESSION['ssbidbuy']['user_id'] );
 
-        if ( empty($_SESSION['jigowatt']['user_id']) ) :
+        if ( empty($_SESSION['ssbidbuy']['user_id']) ) :
 
             // IIS compatibility
             // http://davidwalsh.name/iis-php-server-request_uri
@@ -37,7 +37,7 @@ class Check extends Generic {
                 if (isset($_SERVER['QUERY_STRING'])) { $_SERVER['REQUEST_URI'].='?'.$_SERVER['QUERY_STRING']; }
             }
 
-            $_SESSION['jigowatt']['referer'] = $_SERVER['REQUEST_URI'];
+            $_SESSION['ssbidbuy']['referer'] = $_SERVER['REQUEST_URI'];
 
             $page = parent::getOption('guest-redirect');
             header('Location: ' . $page);
@@ -55,7 +55,7 @@ class Check extends Generic {
      */
     private function isActivated() {
 
-        if ( !empty($_SESSION['jigowatt']['activate']) ) :
+        if ( !empty($_SESSION['ssbidbuy']['activate']) ) :
             header('Location: '. URL::get_site_url() . '/admin/userActivate');
             exit();
         endif;
@@ -69,7 +69,7 @@ class Check extends Generic {
      */
     private function isRestricted() {
 
-        if ( !empty($_SESSION['jigowatt']['restricted']) || !empty($_SESSION['jigowatt']['level_disabled']) ) :
+        if ( !empty($_SESSION['ssbidbuy']['restricted']) || !empty($_SESSION['ssbidbuy']['level_disabled']) ) :
             header('Location: '. URL::get_site_url() . '/userDisable');
             exit();
         endif;
@@ -85,7 +85,7 @@ class Check extends Generic {
      */
     private function forcePwUpdate() {
 
-        if ( !empty($_SESSION['jigowatt']['forcePwUpdate']) && basename($_SERVER['PHP_SELF']) != 'profile.php') :
+        if ( !empty($_SESSION['ssbidbuy']['forcePwUpdate']) && basename($_SERVER['PHP_SELF']) != 'profile.php') :
             // redirect frontend neu la user
             header('Location: '. URL::get_site_url() . '/user_profile/forcePwUpdate');
             // redirect dashboard neu la super admin
@@ -108,7 +108,7 @@ class Check extends Generic {
          */
         $level = array_map( 'trim', explode(",", trim($level)) );
 
-        if( ! @array_intersect($level, $_SESSION['jigowatt']['user_level']) && $level != array('*') )
+        if( ! @array_intersect($level, $_SESSION['ssbidbuy']['user_level']) && $level != array('*') )
             $this->deny_access();
 
     }
@@ -126,10 +126,10 @@ class Check extends Generic {
          */
         $level = array_map( 'trim', explode(",", trim($level)) );
 
-        if ( empty( $_SESSION['jigowatt']['user_id'] ) && $level == array('*') )
+        if ( empty( $_SESSION['ssbidbuy']['user_id'] ) && $level == array('*') )
             return false;
 
-        if ( ! @array_intersect($level, $_SESSION['jigowatt']['user_level']) && $level != array('*') )
+        if ( ! @array_intersect($level, $_SESSION['ssbidbuy']['user_level']) && $level != array('*') )
             return false;
 
         return true;

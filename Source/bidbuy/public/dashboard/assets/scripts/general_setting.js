@@ -46,8 +46,9 @@ var General_Setting = function ()
                 $("span.process_loading").html("<img src='http://localhost/batdongsan/public/dashboard/assets/img/loading.gif'>");
                 var site_title = $('#site_title').val();
                 var email = $('#email_address').val();
+                var hotline = $('#hotline_support').val();
 
-                var datastring = 'site_title=' + site_title + '&admin_email=' + email;
+                var datastring = 'site_title=' + site_title + '&admin_email=' + email + '&hotline_support=' + hotline;
                 var temp = false;
 
                 $.ajax({
@@ -56,6 +57,7 @@ var General_Setting = function ()
                     data: datastring,
                     async: false,
                     success: function (responseText) {
+                        console.log(responseText);
                         if (responseText == 1) {
                             $("span.process_loading").html("");
                             $('.alert-success', '#general_setting_form').show();

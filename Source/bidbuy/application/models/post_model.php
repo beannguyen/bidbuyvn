@@ -209,5 +209,130 @@ class Post_Model extends Model
             $this->db->query( $insert );
         }
     }
+
+    /**
+     * new comment
+     * @param $data
+     * @return bool
+     */
+    function postComment( $data )
+    {
+        $table = DB_PRE . 'comments';
+        if ( $this->db->insert( $table, $data ) )
+            return true;
+        return false;
+    }
+
+    /**
+     * @param $filters
+     * @return bool
+     */
+    function getAllComments( $filters )
+    {
+        $sql = "SELECT a.comment_ID, a.comment_post_ID,
+                    a.comment_author, a.comment_author_email, a.comment_date,
+                    a.comment_content, a.comment_approved,
+                    b.post_title
+                FROM " . DB_PRE . "comments as a, " . DB_PRE . "posts as b
+                WHERE a.comment_post_ID = b.ID
+                AND a.comment_type != 'trash'
+                ORDER BY a.comment_date DESC";
+        // init page navigation
+        if ( isset( $filters['page'] ) ) {
+
+            $page = $filters['page'];
+        } else
+            $page = 1;
+        // set append
+        if ( isset ( $filters ) ) {
+
+            // set append
+            $append = '';
+            foreach ( $filters as $k => $v ) {
+
+                if ( $k !== 'page' ) {
+
+                    $append .= $k . '=' . $v . ';';
+                }
+            }
+            $append = rtrim( $append, ';' );
+        }
+        $url = URL::get_site_url() . '/admin/dashboard/comments';
+
+        $pager = new PageNavigation( $sql, 8, 5, $url, $page, $append, 'backend' );
+
+        // get sql added limit
+        $newSql = $pager->paginate();
+
+        if ( $newSql == false )
+            return false;
+        // execute query
+        $query = $this->db->query( $newSql );
+        $comments = array();
+        while ( $row = $this->db->fetch( $query ) ) {
+
+            foreach ( $row as $k => $v ) {
+
+                $comments[$row['comment_ID']][$k] = $v;
+            }
+        }
+
+        // render navigation
+        $comments['navigation'] = $pager->renderFullNav( '<i class="icon-angle-left"></i>', '<i class="icon-angle-right"></i>' );
+        return $comments;
+    }
+
+    function getAllCommentsForPost( $postId )
+    {
+        $sql = "SELECT a.comment_ID, a.comment_author, a.comment_date, a.comment_content
+                FROM ". DB_PRE ."comments as a
+                WHERE a.comment_approved = 1
+                AND a.comment_post_ID = ". $postId . "
+                AND a.comment_type != 'trash'
+                ORDER BY a.comment_date DESC";
+        $query = $this->db->query( $sql );
+        // if post have comments
+        $comments = array();
+        if ( $this->db->numrows( $query ) > 0 ) {
+
+            while ( $row = $this->db->fetch( $query ) ) {
+
+                foreach ( $row as $k => $v ) {
+
+                    $comments[$row['comment_ID']][$k] = $v;
+                }
+            }
+        } else {
+
+            return false;
+        }
+        return $comments;
+    }
+
+    function approvedComment( $id )
+    {
+        $table = DB_PRE . 'comments';
+        $data = array(
+            'comment_approved' => 1
+        );
+        $where = ' comment_ID = ' . $id;
+        if ( $this->db->update( $table, $data, $where ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    function deleteComment( $id )
+    {
+        $table = DB_PRE . 'comments';
+        $data = array(
+            'comment_type' => 'trash'
+        );
+        $where = ' comment_ID = ' . $id;
+        if ( $this->db->update( $table, $data, $where ) ) {
+            return true;
+        }
+        return false;
+    }
 }
 

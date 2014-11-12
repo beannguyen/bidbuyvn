@@ -57,9 +57,9 @@ function error()
 function callHook() {
     global $get_category, $get_slug;
 
-    require(ROOT . DS . 'application' . DS . 'controllers' . DS . 'post.php');
-    $controller = new postController();
-    $controller->post_show($get_category, $get_slug);
+    require(ROOT . DS . 'application' . DS . 'controllers' . DS . 'product.php');
+    $controller = new productController();
+    $controller->show($get_category, $get_slug);
 }
 
 setReporting();

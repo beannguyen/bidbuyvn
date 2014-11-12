@@ -122,8 +122,8 @@ class Register_Model extends Model
         }
 
         unset(
-        $_SESSION['jigowatt']['referer'],
-        $_SESSION['jigowatt']['token']
+        $_SESSION['ssbidbuy']['referer'],
+        $_SESSION['ssbidbuy']['token']
         );
 
         /* After registering */
@@ -191,8 +191,8 @@ class Register_Model extends Model
         }
 
         unset(
-        $_SESSION['jigowatt']['referer'],
-        $_SESSION['jigowatt']['token']
+        $_SESSION['ssbidbuy']['referer'],
+        $_SESSION['ssbidbuy']['token']
         );
 
         /* After registering */

@@ -9,6 +9,72 @@ class productController extends Controller
     }
 
     /**
+     * Show post for viewer
+     * @param string $categorySlug the slug of category which contain this post
+     * @param string $postSlug post slug
+     */
+    function show($categorySlug, $postSlug)
+    {
+        require_once(ROOT . DS . 'application/models/taxonomy_model.php');
+        // init variables
+        $productInfo = array();
+        $taxonomyModel = new Taxonomy_Model();
+
+        // check 404 error
+        if ( !$taxonomyModel->getCategoryIdBySlug( $categorySlug ) ) { // is category existed?
+
+            $this->view->notfound = true;
+            $this->view->title = 'Không tìm thấy sản phẩm';
+        } else {
+
+            $this->view->categorySlug = $categorySlug;
+            // get post information
+            $productInfo = $this->model->getProductInfoBySlug($categorySlug, $postSlug);
+            if ( $productInfo ) { // is product existed?
+
+                $this->view->notfound = false;
+
+                // set page title
+                $this->view->title = $productInfo['product_title'];
+
+                // set product information
+                $this->view->productInfo = $productInfo;
+
+                // make sure this post is in process
+                if ( $productInfo['product_status'] !== 'on-process' && $productInfo['product_status'] !== 'timeout' )
+                    $this->view->accessdeny = true;
+
+                // increment pageview
+                $this->model->incProductView( $this->view->productInfo['product_id'] );
+
+                // load author information
+                $this->loadModel('user');
+                $this->view->userMetas = $this->model->getUserMeta( $productInfo['product_author']['id'] );
+
+                // load all comments
+                $this->loadModel( 'post' );
+                $comments = $this->model->getAllCommentsForPost( $productInfo['product_id'] );
+                if ( $comments ) { // have comments
+
+                    $this->view->comments = $comments;
+                }
+                $this->view->title = $productInfo['product_title'];
+                // load js
+                $this->view->js[] = 'js/single-product.js';
+                $this->view->loadJS[] = 'SingleProduct';
+            } else {
+
+                $this->view->notfound = true;
+                $this->view->title = 'Không tìm thấy sản phẩm';
+            }
+        }
+
+        $this->view->render('frontend/header');
+        $this->view->render('frontend/single');
+        $this->view->render('frontend/footer');
+    }
+
+    /**
      * insert new product
      */
     function insert()
@@ -86,11 +152,6 @@ class productController extends Controller
                 'post_id' => $productId,
                 'meta_key' => 'product_timeout',
                 'meta_value' => $_POST['input-product-timeout']
-            ),
-            4 => array(
-                'post_id' => $productId,
-                'meta_key' => 'product_top_bid',
-                'meta_value' => 0
             )
         );
         foreach ($detail as $k => $v) {
@@ -113,7 +174,7 @@ class productController extends Controller
         $this->model->addTaxonomyRelationship($taxonomy_id, $productId);
 
         // redirect back to edit page when process was success
-        $_SESSION['jigowatt']['postPublished'] = true;
+        $_SESSION['ssbidbuy']['postPublished'] = true;
         URL::redirect_to(URL::get_site_url() . '/admin/dashboard/edit_product/' . $productId);
     }
 
@@ -212,7 +273,7 @@ class productController extends Controller
         }
 
         // redirect back to edit page when process was success
-        $_SESSION['jigowatt']['postUpdated'] = true;
+        $_SESSION['ssbidbuy']['postUpdated'] = true;
         URL::redirect_to(URL::get_site_url() . '/admin/dashboard/edit_product/' . $productId);
     }
 

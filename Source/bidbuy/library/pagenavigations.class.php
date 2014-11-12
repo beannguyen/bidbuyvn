@@ -21,11 +21,12 @@ class PageNavigation extends Connect {
     var $max_pages = 0;
     var $offset = 0;
     var $append = ""; //Parameters to append to pagination links
+    var $type; // navigation for frontend or backend
 
     /**
      * Constructor
      */
-    function __construct( $sql, $rows_per_page = 10, $links_per_page = 5, $url = '', $page = 1, $append = "" )
+    function __construct( $sql, $rows_per_page = 10, $links_per_page = 5, $url = '', $page = 1, $append = "", $type )
     {
         // Call the connection
         $this->db = parent::dbObj();
@@ -41,6 +42,7 @@ class PageNavigation extends Connect {
         $this->append = $append;
         $this->php_self = $url;
         $this->page = intval( $page );
+        $this->type = $type;
     }
 
     /**
@@ -88,6 +90,51 @@ class PageNavigation extends Connect {
         return $rs;
     }
 
+    function createURL ( $page )
+    {
+        $url = '';
+        if ( $this->type === 'backend' )
+        {
+            $url .= $this->php_self . '/page=' . $page;
+
+            if ( $this->append !== '' )
+                $url .= ';' . $this->append;
+        } else {
+
+            if ( $this->php_self === ( URL::get_site_url() . '/' ) ) {
+
+                $url .= $this->php_self . 'trang-chu/page-' . $page . '.html';
+            } else {
+
+                global $get;
+                if ( $get != null ) {
+
+                    if ( strpos( $get, 'tab-ending-bid' ) !== FALSE ) {
+
+                        $url .= URL::get_site_url() . '/trang-chu/tab-ending-bid' . '-' . $page . '.html';
+                    } elseif ( strpos( $get, 'tab-top-bid' ) !== FALSE ) {
+
+                        $url .= URL::get_site_url() . '/trang-chu/tab-top-bid' . '-' . $page . '.html';
+                    } elseif ( strpos( $get, 'page' ) !== FALSE ) {
+
+                        $url .= URL::get_site_url() . '/trang-chu/page' . '-' . $page . '.html';
+                    }
+                }
+
+                global $get_category;
+                if ( $get_category != null ) {
+
+                    require_once(ROOT . DS . 'application/models/taxonomy_model.php');
+                    $taxonomyModel = new Taxonomy_Model();
+                    $slug = $taxonomyModel->getCategorySlug( $get_category['id'] );
+                    if ( strpos( $get_category['query'], $slug ) !== FALSE ) {
+                        $url .= URL::get_site_url() . '/category/' . $get_category['id'] . '/' . $slug . '-' . $page . '.html';
+                    }
+                }
+            }
+        }
+        return $url;
+    }
     /**
      * show the next icon
      * @param string $tag icon for next item
@@ -99,10 +146,8 @@ class PageNavigation extends Connect {
             return FALSE;
 
         if ( $this->page < $this->max_pages ) {
-            $url = $this->php_self . '/page=' . ($this->page + 1);
-            if ( $this->append !== '' )
-                $url .= ';' . $this->append;
-            return '<li><a href="' . $url . '">' . $tag . '</a></li>';
+            $url = $this->createURL( $this->page + 1 );
+            return '<li class="next" ><a href="' . $url . '">' . $tag . '</a></li>';
         } else {
             return '<li class="next disabled"><a href="javascript:;">' . $tag . '</a></li>';
         }
@@ -120,10 +165,8 @@ class PageNavigation extends Connect {
 
         if ($this->page > 1) {
 
-            $url = $this->php_self . '/page=' . ($this->page - 1);
-            if ( $this->append !== '' )
-                $url .= ';' . $this->append;
-            return '<li><a href="' . $url . '">' . $tag . '</a></li>';
+            $url = $this->createURL($this->page - 1);
+            return '<li class="prev" ><a href="' . $url . '">' . $tag . '</a></li>';
         } else {
             return '<li class="prev disabled"><a href="javascript:;">' . $tag . '</a></li>';
         }
@@ -154,9 +197,7 @@ class PageNavigation extends Connect {
                 $links .= ' <li class="active"><a href="javascript:;">' . $i . '</a></li>';
             } else {
 
-                $url = $this->php_self . '/page=' . $i;
-                if ( $this->append !== '' )
-                    $url .= ';' . $this->append;
+                $url = $this->createURL( $i );
                 $links .= ' ' . $prefix . '<a href="' . $url . '">' . $i . '</a>' . $suffix . ' ';
             }
         }

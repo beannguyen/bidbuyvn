@@ -59,7 +59,7 @@
 <!-- BEGIN TOP NAVIGATION BAR -->
 <div class="header-inner">
 <!-- BEGIN LOGO -->
-<a class="navbar-brand" href="index.html">
+<a class="navbar-brand" href="<?php echo URL::get_site_url(); ?>" target="_blank">
     <img src="<?php echo URL::get_site_url() ?>/public/dashboard/assets/img/logo.png" alt="logo"
          class="img-responsive"/>
 </a>

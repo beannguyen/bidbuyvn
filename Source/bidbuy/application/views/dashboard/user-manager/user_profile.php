@@ -43,68 +43,11 @@
 <!--BEGIN TABS-->
 <div class="tabbable tabbable-custom tabbable-full-width">
 <ul class="nav nav-tabs">
-    <?php if (!isset($this->profile_setting)) { ?>
-        <li class="active"><a href="#tab_1_1" data-toggle="tab">Tổng quan</a></li><?php } ?>
-    <li <?php if (isset($this->profile_setting)) { ?>class="active"<?php } ?>><a href="#tab_1_3" data-toggle="tab">Cài
-            đặt tài khoản</a></li>
+    <li class="active"><a href="#tab_1_3" data-toggle="tab">Cài đặt tài khoản</a></li>
 </ul>
 <div class="tab-content">
-<?php if (!isset($this->profile_setting)) { ?>
-    <div class="tab-pane active" id="tab_1_1">
-<div class="row">
-<div class="col-md-3">
-    <ul class="list-unstyled profile-nav">
-        <li>
-            <a href="http://gravatar.com/emails/" title="<?php echo _('Change your avatar at Gravatar.com'); ?>"
-               target="_blank">
-                <img src="<?php echo $generic->get_gravatar($_SESSION['jigowatt']['email'], false, 300); ?>"
-                     class="img-responsive" alt=""/>
-            </a>
-        </li>
-    </ul>
-</div>
-<div class="col-md-9">
-    <div class="row">
-        <div class="col-md-8 profile-info">
-            <h1><?php echo $this->user_info['name']; ?></h1>
-            <strong>Giới thiệu: </strong>
-            <?php
-            if ($this->user_meta['about'] != '')
-                echo $this->user_meta['about'];
-            else {
-                ?>
-                <i>Cập nhật dòng giới thiệu của bạn tại "Cài đặt tài khoản".</i>
-            <?php } ?>
-            <?php if ($this->user_meta['website_url'] != '') { ?>
-                <p><a href="#"><?php echo $this->user_meta['website_url']; ?></a></p>
-            <?php } ?>
-
-        </div>
-        <!--end col-md-8-->
-    </div>
-    <!--end row-->
-    <div class="tabbable tabbable-custom tabbable-custom-profile">
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="#tab_1_11" data-toggle="tab">Thông báo</a></li>
-        </ul>
-        <div class="tab-content">
-        <div class="tab-pane active" id="tab_1_1">
-        <div class="scroller" style="height: 290px;" data-always-visible="1" data-rail-visible="0">
-        <ul class="feeds">
-            <?php
-            require('function.php');
-            historyLog();
-            ?>
-        </ul>
-        </div>
-        </div>
-        </div>
-    </div>
-</div>
-</div>
-    </div><?php } ?>
 <!--tab_1_2-->
-<div class="tab-pane <?php if (isset($this->profile_setting)) { ?>active<?php } ?>" id="tab_1_3">
+<div class="tab-pane active" id="tab_1_3">
     <div class="row profile-account">
 
         <div class="col-md-3">
@@ -189,6 +132,22 @@
                             <label class="control-label">Nghề nghiệp</label>
                             <input type="text" name="job_title" placeholder="Nhập nghề nghiệp"
                                    class="form-control job_title" value="<?php echo $this->user_meta['job_title']; ?>"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Địa chỉ</label>
+                            <input type="text" name="address" placeholder="Nhập địa chỉ"
+                                   class="form-control address" value="<?php echo $this->user_meta['address']; ?>"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Tỉnh / Thành phố</label>
+                            <input type="text" name="city" placeholder="Nhập Tỉnh / Thành phố"
+                                   class="form-control city" value="<?php echo $this->user_meta['city']; ?>"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label visible-ie8 visible-ie9">Nước</label>
+                            <select name="country" id="country_select" class="select2 form-control">
+                                <option value="vn">Viet Nam</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label class="control-label">Website Url</label>

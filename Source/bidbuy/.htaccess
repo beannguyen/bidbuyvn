@@ -5,13 +5,18 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-l
 
+    # Rewrite index page
+    RewriteRule ^trang-chu/(.+).html$ index.php?get=$1 [L]
+
     # Rewrite post entry
-    RewriteRule ^p/(.+)/(.+).html$ post.php?category=$1&link=$2 [L]
+    RewriteRule ^p/(.+)/(.+).html$ product.php?category=$1&link=$2 [L]
 
     # Rewrite category url
-    RewriteRule ^category/(.+).html$ archive.php?category=$1 [L]
+    RewriteRule ^category/(.+)/(.+).html$ archive.php?id=$1&category=$2 [L]
 
     # Rewrite backend
     RewriteRule ^admin/(.*)$ dashboard.php?url=$1 [L]
     RewriteRule ^admin$ dashboard.php?url=$1 [L]
+
+    ErrorDocument 404 /bidbuy/index.php?http_error=404
 </IfModule>

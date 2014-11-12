@@ -1,0 +1,68 @@
+@media (min-width: 1200px) {
+  .row .colums-9 {
+    width: 990px;
+  }
+  .row .colums-3 {
+    width: 240px;
+  }
+}
+@media (max-width: 1199px) {
+  .header .logo img {
+    width: 100%;
+  }
+
+  .main-form form {
+    width: auto;
+  }
+  .main-form form input {
+    width: 200px;
+  }
+
+  .list-product .tab-links-bid ul li a {
+    font-size: 14px;
+    padding: 0 15px;
+  }
+
+  .footer .col-sm-3 {
+    width: 184px;
+  }
+  .footer .col-large {
+    width: 375px;
+  }
+}
+@media (max-width: 991px) {
+  .main-nav .main-nav-tab li a {
+    padding: 0 10px;
+  }
+}
+@media (max-width: 991px) {
+  .main-form form .fancy-select {
+    width: 109px;
+  }
+  .main-form form .fancy-select div.trigger {
+    width: 109px;
+  }
+  .main-form .user-menu-zone {
+    float: right;
+    width: 50px;
+    text-align: center;
+    background: red;
+    position: relative;
+  }
+  .main-form .user-menu-zone i {
+    display: block;
+    height: 34px;
+    line-height: 34px;
+    font-size: 25px;
+  }
+  .main-form .user-menu-zone ul {
+    position: absolute;
+  }
+  .main-form .user-menu-zone ul li {
+    display: none;
+  }
+
+  .main-nav .main-nav-tab li a {
+    padding: 0 10px;
+  }
+}

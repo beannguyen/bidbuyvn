@@ -123,7 +123,7 @@ var ThemeMenus = function () {
                     url: "../admin/theme/createMenu",
                     data: dataString,
                     success: function (responseText) {
-                        // console.log(responseText);
+                        console.log(responseText);
                         $("span.loading_category").html("");
                         if (responseText === 'db_error') {
 

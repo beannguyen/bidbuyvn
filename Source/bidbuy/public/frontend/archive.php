@@ -4,9 +4,10 @@ define('ROOT', dirname(dirname(dirname(__FILE__))));
 
 $get_category = null;
 
-if( isset( $_GET['category'] ) )
+if( isset( $_GET['category'] ) && isset( $_GET['id'] ) )
 {
-    $get_category = $_GET['category'];
+    $get_category['id'] = $_GET['id'];
+    $get_category['query'] = $_GET['category'];
 }
 
 require_once (ROOT . DS . 'config' . DS . 'config.php');

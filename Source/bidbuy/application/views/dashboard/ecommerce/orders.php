@@ -33,30 +33,26 @@
         <!-- BEGIN Portlet PORTLET-->
         <div class="portlet gren">
             <div class="portlet-title">
-                <div class="caption"><i class="icon-reorder"></i>Tất cả hóa đơn <span class="badge">6</span></div>
+                <div class="caption"><i class="icon-reorder"></i>Tất cả hóa đơn <?php if ( isset( $this->activesellerorders ) ) echo 'bán'; else echo 'mua'; ?> </div>
             </div>
             <div class="portlet-body">
                 <!-- BEGIN ORDERS TOOLBAR -->
                 <div class="custom-toolbar row">
                     <div class="item">
-                        <a href="<?php URL::get_site_url(); ?>/admin/create_orders" class="btn green">Thêm mới <i class="icon-plus"></i></a>
-                    </div>
-                    <div class="item">
-                        <select class="form-control input-medium">
+                        <select id="orders-archive-filter" class="form-control input-medium">
                             <option>Tất cả các ngày</option>
-                            <option>Option 2</option>
-                            <option>Option 3</option>
-                            <option>Option 4</option>
-                            <option>Option 5</option>
+                            <?php
+                            if ( isset( $this->archives ) ) {
+
+                                foreach ( $this->archives as $k => $v ) {
+
+                                    echo '<option>'. $v .'</option>';
+                                }
+                            }
+                            ?>
                         </select>
-                    </div>
-                    <div class="item">
-                        <select  class="form-control input-medium select2me" data-placeholder="Chọn tên khách hàng...">
-                            <option value=""></option>
-                            <option value="AL">Alabama</option>
-                            <option value="WY">Wyoming</option>
-                        </select>
-                        <a href="javascript:;" class="btn green"><i class="icon-search"></i></a>
+                        <input type="hidden" id="archive-selected" value="<?php if ( isset( $this->filters ) ) echo $this->filters['archive']; ?>">
+                        <input type="hidden" id="type-orders" value="<?php if ( isset( $this->activesellerorders ) ) echo 'seller'; else echo 'buyer'; ?>" />
                     </div>
                 </div>
                 <!-- END ORDERS TOOLBAR -->
@@ -67,68 +63,75 @@
                         <tr>
                             <th><i class="icon-info-sign"></i> Trạng thái</th>
                             <th><i class="icon-file"></i> Hóa Đơn</th>
-                            <th class="hidden-xs"><i class="icon-truck"></i> Địa Chỉ</th>
+                            <th class="hidden-xs"><i class="icon-truck"></i> Địa Chỉ Khách Hàng</th>
                             <th><i class="icon-calendar"></i> Ngày lập</th>
                             <th><i class="icon-shopping-cart"></i> Tổng cộng</th>
-                            <th><i class="icon-cog"></i> Thao tác</th>
                         </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    On hold
-                                </td>
-                                <td>
-                                    <a href="#">#11</a> by <strong><a href="#">Customer A</a></strong>
-                                </td>
-                                <td>
-                                    bean, 42 Man Thien, Ho Chi Minh, Viet Nam
-                                </td>
-                                <td>
-                                    22/10/2014
-                                </td>
-                                <td>
-                                    300,000d
-                                </td>
-                                <td>
-                                    <a href="javascript:;" class="btn blue"><i class="icon-eye-open"></i></a>
-                                    <a href="javascript:;" class="btn blue"><i class="icon-trash"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    Pending
-                                </td>
-                                <td>
-                                    <a href="#">#12</a> by <strong><a href="#">Customer B</a></strong>
-                                </td>
-                                <td>
-                                    bean, 1 Vo Van Ngan, Ho Chi Minh, Viet Nam
-                                </td>
-                                <td>
-                                    21/10/2014
-                                </td>
-                                <td>
-                                    1,000,000d
-                                </td>
-                                <td>
-                                    <a href="javascript:;" class="btn blue"><i class="icon-eye-open"></i></a>
-                                    <a href="javascript:;" class="btn blue"><i class="icon-trash"></i></a>
-                                </td>
-                            </tr>
+                        <?php
+
+                        if ( isset( $this->orders ) ) {
+
+                            $generic = new Generic();
+                            foreach ( $this->orders as $key => $val ) {
+
+                                if ( $key !== 'navigation' ) :
+                                ?>
+                                <tr>
+                                    <td>
+                                        <?php
+                                        if ( $val['post_status'] === 'awaiting')
+                                            echo 'Đợi xử lý';
+                                        elseif ( $val['post_status'] === 'processing' )
+                                            echo 'Đang tiến hành';
+                                        else
+                                            echo 'Kết thúc';
+                                        ?>
+                                    </td>
+                                    <td>
+                                        <a href="#">#<?php echo $val['ID']; ?></a> for <strong><a href="<?php $product = unserialize( $val['order_summary'] ); echo $generic->post_permalink( $product['id']); ?>" target="_blank"><?php echo $product['name']; ?></a></strong>
+                                    </td>
+                                    <td>
+                                        <?php
+                                        $customInfo = unserialize( $val['order_shipping'] );
+                                        $string = '';
+                                        for ( $i = 0; $i < sizeof( $customInfo ); $i++ ) {
+
+                                            if ( $customInfo[$i] === 'vn' ) {
+
+                                                $string .= 'Việt Nam, ';
+                                                continue;
+                                            }
+                                            $string .= $customInfo[$i] . ', ';
+                                        }
+                                        $string = rtrim( $string, ', ');
+                                        echo $string;
+                                        ?>
+                                    </td>
+                                    <td>
+                                        <?php
+                                        $time = new timer();
+                                        echo $time->timeFormat( $val['post_date'], 'd/m/Y' );
+                                        ?>
+                                    </td>
+                                    <td>
+                                        <?php
+                                        echo $product['price'] . 'đ';
+                                        ?>
+                                    </td>
+                                </tr>
+                        <?php
+                                endif;
+                            }
+                        }
+                        ?>
                         </tbody>
                     </table>
                 </div>
                 <div class="row">
                     <ul class="pagination pull-right">
-                        <li><a href="#"><i class="icon-angle-left"></i></a></li>
-                        <li><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#">6</a></li>
-                        <li><a href="#"><i class="icon-angle-right"></i></a></li>
+                        <?php if ( isset( $this->orders ) ) echo $this->orders['navigation']; ?>
                     </ul>
                 </div>
                 <!-- END TABLE DATA -->
