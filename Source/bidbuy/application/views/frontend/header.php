@@ -68,20 +68,7 @@ $themeFunc = new ThemeFunction();
                 <div class="row">
                     <div class="col-md-12">
                         <div class="main-form">
-                            <form action="">
-                                <div class="input" id="custom">
-                                    <input type="text">
-
-                                    <select class="list">
-                                        <option value="one">One</option>
-                                        <option value="two">Two</option>
-                                        <option value="three">Three</option>
-                                        <option value="four">Four</option>
-                                        <option value="five">Five</option>
-                                    </select>
-                                </div>
-                                <button type="submit">Search</button>
-                            </form>
+                            <?php include('search-bar.php'); ?>
                             <?php if ( isset( $_SESSION['ssbidbuy']['user_id'] ) ) : ?>
                             <div class="button-bid">
                                 <a href="<?php echo URL::get_site_url(); ?>/admin/mybids">My bids</a>

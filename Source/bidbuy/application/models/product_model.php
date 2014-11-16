@@ -440,7 +440,7 @@ class Product_Model extends Model
         if ($type === 'frontend')
             $url = URL::curURL();
 
-        $pager = new PageNavigation($sql, 4, 5, $url, $page, $append, $type);
+        $pager = new PageNavigation($sql, 16, 5, $url, $page, $append, $type);
 
         // get sql added limit
         $newSql = $pager->paginate();

@@ -99,6 +99,16 @@ class PageNavigation extends Connect {
 
             if ( $this->append !== '' )
                 $url .= ';' . $this->append;
+        } elseif ( $this->type === 'search' ) {
+
+            if ( strpos( $this->php_self, 'page=' ) !== FALSE ) {
+
+                $temp = substr( $this->php_self, 0, strpos( $this->php_self, 'page=' ) + 5);
+                $url .= $temp . $page;
+            } else {
+
+                $url .= $this->php_self . '&page=' . $page;
+            }
         } else {
 
             if ( $this->php_self === ( URL::get_site_url() . '/' ) ) {

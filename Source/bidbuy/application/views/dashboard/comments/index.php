@@ -48,7 +48,8 @@
                         <tbody>
                         <?php
                         $generic = new Generic();
-                        if ( isset ( $this->comments ) ) {
+
+                        if ( isset ( $this->comments ) && $this->comments !== false ) {
 
                             foreach ( $this->comments as $key => $val ) {
 
